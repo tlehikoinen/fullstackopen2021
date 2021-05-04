@@ -1,0 +1,62 @@
+//0.4 new note
+
+note over Browser:
+User clicks "submit"
+end note
+Browser->Server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note (form="name")
+Browser-> Server: HTTP Get https://studies.cs.helsinki.fi/exampleapp/notes
+Server-->Browser: HTML code
+note over Browser:
+Styling 
+end note
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+Server-->Browser: main.css
+note over Browser:
+js file
+end note
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.js
+Server-->Browser: main.js
+note over Browser:
+js executes
+end note
+Browser->Server: HTTP GET /exampleapp/data.json
+note over Server
+Waits until response status is 200 and parses data into list
+end note
+Server-->Browser: "notes" element appended with the data
+
+
+//0.5 single page app
+Browser-> Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/spa
+Server-->Browser: HTML code
+note over Browser:
+Styling 
+end note
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+Server-->Browser: main.css
+note over Browser:
+js file
+end note
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/spa.js
+Server-->Browser: main.js
+note over Browser:
+js executes
+end note
+Browser->Server: HTTP GET /exampleapp/data.json
+Server-->Browser: Contents as json object
+note over Browser
+Browser renders contents into list
+end note
+
+
+
+//0.6 new note
+Server->Browser: HTTP POST /exampleapp/new_note_spa
+Browser-->Server: Status code 201 : created
+note over Server
+Event handler pushes "notes_form" content into array and renders to browser
+end note 
+
+
+
+
