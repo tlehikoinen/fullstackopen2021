@@ -6,12 +6,18 @@ const Button = ({handleClick, text}) => (
   </button>
 )
 
+const StatisticLine = ({text, value, sign }) => {
+  return(
+    <p>{text} {value} {sign}</p>
+  )
+}
 
 
 const Statistics = ({good, neutral, bad}) => { 
   let totalFeedbacks = good + neutral + bad
   let totalSum = (good*1) + (neutral*0) + (bad*-1)
   let positiveFeedbacks = (good/totalFeedbacks*100)
+  let average = totalSum/totalFeedbacks
 
   if(totalFeedbacks === 0){
     return(
@@ -22,17 +28,15 @@ const Statistics = ({good, neutral, bad}) => {
   }else
   return (
   <div>
-    <p>good {good}</p>
-    <p>neutral {neutral}</p>
-    <p>bad {bad}</p>
-    <p>all {totalFeedbacks}</p>
-    <p>average {totalSum/totalFeedbacks}</p>    
-    <p>positive {positiveFeedbacks} %</p>
+    <StatisticLine text="good" value={good}/>
+    <StatisticLine text="neutral" value={neutral}/>
+    <StatisticLine text="bad" value={bad}/>
+    <StatisticLine text="all" value={totalSum}/>
+    <StatisticLine text="average" value={average}/>
+    <StatisticLine text="positive" value={positiveFeedbacks} sign={"%"}/>
   </div>
   )
 }
-
-
 
 const App = () => {
   // tallenna napit omaan tilaansa
