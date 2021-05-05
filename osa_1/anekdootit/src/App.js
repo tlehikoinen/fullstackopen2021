@@ -6,6 +6,13 @@ const Button = ({handleClick, text}) => (
   </button>
 )
 
+const RenderText = ({heading, anecdote}) => (
+  <div>
+    <h1>{heading}</h1>
+    <p>{anecdote}</p>
+  </div>
+)
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often',
@@ -21,22 +28,21 @@ const App = () => {
   const [mostVotes, setMostVotes] = useState(0)
 
   const IncrementVote = () => {
-      const voteCopy = {...votes}
-      voteCopy[selected]+=1
-      setVotes(voteCopy)
-  }
+      const votesCopy = {...votes}
+      votesCopy[selected]+=1
+      setVotes(votesCopy)  
 
+      if(votesCopy[selected]>votesCopy[mostVotes])
+        {setMostVotes(selected)}
+  }
   const RandomStateNumber = () => setSelected(Math.floor(Math.random()*6))
 
   return (
     <div>
-        {anecdotes[selected]}
-        <br/>
-        has {votes[selected]} votes
-      <div>
-        <Button handleClick={IncrementVote} text="vote"/>
-        <Button handleClick={RandomStateNumber} text="new anecdote"/>
-      </div>
+      <RenderText heading="Anecdote of the day" anecdote={anecdotes[selected]}/>
+      <Button handleClick={IncrementVote} text="vote"/>
+      <Button handleClick={RandomStateNumber} text="new anecdote"/>
+      <RenderText heading="Anecdote with most votes" anecdote={anecdotes[mostVotes]}/>
    </div>
   )
 }
