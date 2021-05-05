@@ -40,10 +40,15 @@ const App = () => {
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
 
-  const incrementGood = () => setGood(good + 1)
-  const incrementNeutral = () => setNeutral(neutral + 1)
-  const incrementBad = () => setBad(bad + 1)
-  
+  const incrementGood = () => {
+    setGood(good + 1)
+  }
+  const incrementNeutral = () => {
+    setNeutral(neutral + 1)
+  }
+  const incrementBad = () => {
+    setBad(bad + 1)
+  }
 
   return (
     <div>
