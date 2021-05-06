@@ -5,6 +5,7 @@ const Course =(props) => {
     <div>
         <Header courseName = {props.course.name} />
         <Content partInfo = {props.course.parts} />
+        <Total partInfo = {props.course.parts} />
     </div>
   )
 }
@@ -24,6 +25,16 @@ const Part = (props) => (
     {props.part.name} {props.part.exercises}
   </li>
   )
+  
+const Total = ({partInfo}) => {
+  var totalPoints = partInfo.reduce((sum, item) => {
+    return sum + item.exercises
+  }, 0)
+  return (
+    <h4>Total of {totalPoints} exercises</h4>
+  )
+}
+
 
 const App = () => {
   const course = {
