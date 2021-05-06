@@ -1,65 +1,61 @@
 import React from 'react'
 
-
-const Header = (props) => {
+const Course =(props) => {
   return (
-    <>
-      <h1>{props.course.name}</h1>
-    </>
+    <div>
+        <Header courseName = {props.course.name} />
+        <Content partInfo = {props.course.parts} />
+    </div>
   )
 }
 
-const Content = (props) => {
-  return (
-    <>
-      <Part part={props.course.parts[0]}/>
-      <Part part={props.course.parts[1]}/>
-      <Part part={props.course.parts[2]}/>
-    </>
-  )
-}
+const Header = ({courseName}) => <h1>{courseName}</h1>
 
-const Part = (props) => {
-  return (
-  <>
-    <p>{props.part.name} {props.part.exercises}</p>
-  </>
-  )
-}
+const Content = ({partInfo}) => (
+  <ul>
+    {partInfo.map((part, i) =>
+      <Part key={i} part={part}/>)}
+  </ul>
 
-const Total = (props) => {
-  return (
-  <>
-    <p>Number of exercises {props.course.parts[0].exercises + props.course.parts[1].exercises + props.course.parts[2].exercises} </p>
-  </>
-  )
-}
+)
 
+const Part = (props) => (
+  <li>
+    {props.part.name} {props.part.exercises}
+  </li>
+  )
 
 const App = () => {
   const course = {
     name: 'Half Stack application development',
+    id: 1,
     parts: [
       {
         name: 'Fundamentals of React',
-        exercises: 10
+        exercises: 10,
+        id: 1
       },
       {
         name: 'Using props to pass data',
-        exercises: 7
+        exercises: 7,
+        id: 2
       },
       {
         name: 'State of a component',
-        exercises: 14
+        exercises: 14,
+        id: 3
+      },
+      {
+        name: 'New addition',
+        exercises: 1,
+        id: 4
       }
     ]
   }
 
   return (
     <div>
-      <Header course={course}/>
-      <Content course={course}/>
-      <Total course={course}/>
+      <Course course={course} />
     </div>
   )
 }
