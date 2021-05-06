@@ -20,7 +20,7 @@
 
 #pnpm
 pnpm-lock.yaml
-.pnpm-debug
+.pnpm-debug.log*
 
 npm-debug.log*
 yarn-debug.log*
