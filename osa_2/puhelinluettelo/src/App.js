@@ -9,17 +9,22 @@ const RenderPhonebook = ({ persons }) => {
   )
 }
 
-const RenderUserLi = ({ person }) => <li>{person.name}</li>
+const RenderUserLi = ({ person }) => <li>{person.name} {person.phonenumber}</li>
 
 
 
 const App = () => {
-  const [persons, setPersons] = useState([{ name: 'Arto Hellas' }])
-  const [newName, setNewName] = useState('Add new name')
+  const [persons, setPersons] = useState([{ name: 'Arto Hellas', phonenumber:'05050' }])
+  const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
 
   const handleNewUser = (event) => {
     setNewName(event.target.value)
   }
+  const handleNewPhonenumber = (event) => {
+    setNewNumber(event.target.value)
+  }
+
 
   const addNewUser = (event) => {
     event.preventDefault()
@@ -27,13 +32,14 @@ const App = () => {
       alert(`${newName} is already added to phonebook`)
     } else {
       const newUser = {
-        name: newName
+        name: newName,
+        phonenumber: newNumber
       }
       setPersons(persons.concat(newUser))
-      setNewName('Add new name')
+      setNewName('')
+      setNewNumber('')
     }
   }
-  const emptyBox = () => setNewName('')
 
   function nameAlreadyInList() {
     for (let i = 0; i < persons.length; i++) {
@@ -43,16 +49,13 @@ const App = () => {
     return false;
   }
 
-  const printError = () => {
-
-  }
-
   return (
     <div>
       <h2>Phonebook</h2>
       <form>
         <div>
-          name: <input value={newName} onClick={emptyBox} onChange={handleNewUser} />
+          name: <input value={newName} placeholder="enter new name" onChange={handleNewUser} /><br/>
+          phone: <input value={newNumber} placeholder="enter phonenumber" onChange={handleNewPhonenumber}/>
         </div>
         <div>
           <button type="submit" onClick={addNewUser}>add</button>
