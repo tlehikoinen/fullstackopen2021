@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 
 const RenderPhonebook = ({ filterText, persons }) => {
   return (
@@ -39,15 +39,22 @@ const NewButton = ({buttonInfo}) => (
 
 const App = () => {
 
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', phonenumber: '05050' },
-    { name: 'Ada Lovelace', phonenumber: '39-44-5323523' },
-    { name: 'Mikko', phonenumber: '33333' }
-  ])
-
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterText, setFilterText] = useState('')
+
+  useEffect(() => {
+    console.log('effect')
+    axios
+    .get('http://localhost:3001/persons')
+    .then(response =>{
+        console.log('response fulfilled')
+        setPersons(response.data)
+        console.log(response.data)
+    })
+  },[])
+
 
   const handleNewUser = (event) => {
     setNewName(event.target.value)
