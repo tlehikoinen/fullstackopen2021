@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 
 const SearchBox = (props) => (
-  <>{props.text} <input value={props.value} placeholder={props.placeholder} onChange={props.onChange} /></>
+  <>{props.text} <input id={props.id} value={props.value} placeholder={props.placeholder} onChange={props.onChange} /></>
 )
 
 
 const DisplayCountryInfo = (props) => {
   let searchedCountries = []
+  console.log("hey", props.handleClick)
 
   props.countries
     .filter(country => country.name.toLowerCase().includes(props.filterText.toLowerCase()))
@@ -23,7 +24,7 @@ const DisplayCountryInfo = (props) => {
 
   if (res > 1 && res < 10) {
     return <div>
-      {searchedCountries.map((country, i) => <FilteredCountryList key={i} country={country} />)}
+      {searchedCountries.map((country, i) => <FilteredCountryList key={i} country={country} handleClick={props.handleClick} />)}
     </div>
   }
 
@@ -50,8 +51,10 @@ const SingleCountry = (props) => (
 )
 
 const FilteredCountryList = (props) => (
-  <>{props.country.name}<br /></>
+  <>{props.country.name} <button value={props.country.name} onClick={() => props.handleClick(props.country.name)}>show</button><br /></>
 )
+
+
 
 
 const App = () => {
@@ -68,11 +71,15 @@ const App = () => {
   }, [])
 
   const handleSearchBox = (event) => newSearched(event.target.value)
+  const handleClick = countryName => {
+    newSearched(countryName)
+  }
+
 
   return (
     <div>
-      <SearchBox text='find countries' placeholder="Enter a country" onChange={handleSearchBox} value={searched} />
-      <DisplayCountryInfo filterText={searched} countries={countries} />
+      <SearchBox id = "countrySearchBox" text='find countries' placeholder="Enter a country" onChange={handleSearchBox} value={searched} />
+      <DisplayCountryInfo filterText={searched} countries={countries} handleClick={handleClick} />
     </div>
   )
 }
