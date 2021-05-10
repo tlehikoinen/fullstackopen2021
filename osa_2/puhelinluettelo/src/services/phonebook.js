@@ -16,12 +16,6 @@ const deleteUser = id => {
 
 const updateUserPhonenumber = (newUserInfo) => {
     return axios.put(`${baseUrl}/${newUserInfo.id}`, newUserInfo)
-    .then(() => {
-        console.log("update success")
-    })
-    .catch(error => {
-        console.log("update failed")
-    })
 }
 
 
