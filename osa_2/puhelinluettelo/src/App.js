@@ -59,12 +59,23 @@ const App = () => {
   const handleNewUser = (event) => setNewName(event.target.value)
   const handleNewPhonenumber = (event) => setNewNumber(event.target.value)
   const handleNewFilter = (event) => setFilterText(event.target.value)
-  
+
+  const updatePhonebook = () => {
+    personService
+      .getAll()
+      .then(response => setPersons(response.data))
+  }
 
   const addNewUser = (event) => {
     event.preventDefault()
-    if (nameAlreadyInList()) {
-      alert(`${newName} is already added to phonebook`)
+    const userInfo = nameAlreadyInList()
+    if (userInfo) {
+      const newUserInfo = {...userInfo, phonenumber: newNumber}
+      if(window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`))
+      personService
+      .updateUserPhonenumber(newUserInfo)
+      .then(() => updatePhonebook())
+
     } else {
       const newUser = {
         name: newName,
@@ -73,9 +84,7 @@ const App = () => {
       personService
         .create(newUser)
         .then(() => {
-          personService
-            .getAll()
-            .then(response => setPersons(response.data))
+          updatePhonebook()
           setNewName('')
           setNewNumber('')
         })
@@ -88,16 +97,13 @@ const App = () => {
     if (window.confirm(`Delete ${deletedUser.name} ?`))
       personService
         .deleteUser(id)
-        .then((response) => {
-          setPersons(persons.filter(person => person.id !== id))
-        }
-        )
+        .then(() => updatePhonebook())
   }
 
   function nameAlreadyInList() {
     for (let i = 0; i < persons.length; i++) {
       if (persons[i].name === newName)
-        return true;
+        return persons[i];
     }
     return false;
   }
