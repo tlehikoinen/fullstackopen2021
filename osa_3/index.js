@@ -1,8 +1,10 @@
-const { response } = require('express')
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 
 app.use(express.json())
+
+app.use(morgan('tiny'))
 
 let persons = [
     {
@@ -60,12 +62,12 @@ app.post('/api/persons', (req, res) => {
     const userInfo = req.body
 
     const errorMsg = sentInfoErrorMsg(userInfo)
-    const errorJson = {errorMsg}
+    const errorJson = { errorMsg }
 
-    if(errorMsg.length !== 0){
+    if (errorMsg.length !== 0) {
         res.status(400).json(errorJson)
     }
-     else {
+    else {
         userInfo.id = nextId
         persons = persons.concat(userInfo)
         res.json(userInfo)
@@ -76,9 +78,9 @@ const sentInfoErrorMsg = (userInfo) => {
     const errorMessages = []
     if ([undefined, null, ""].includes(userInfo.name))
         errorMessages.push("Error with name")
-    if([undefined, null, ""].includes(userInfo.number))
+    if ([undefined, null, ""].includes(userInfo.number))
         errorMessages.push("Error with number")
-    if(persons.find(p => p.name === userInfo.name))
+    if (persons.find(p => p.name === userInfo.name))
         errorMessages.push("Name must be unique")
 
     return errorMessages
@@ -93,6 +95,20 @@ const getRandomId = () => {
     const randomId = Math.floor((Math.random() * 10000))
     return randomId
 }
+
+const requestLogger = (request, response, next) => {
+    console.log('Method:', request.method)
+    console.log('Path:  ', request.path)
+    console.log('Body:  ', request.body)
+    console.log('---')
+    next()
+  }
+
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: 'unknown endpoint' })
+  }
+
+  app.use(unknownEndpoint)
 
 
 const PORT = 3001
