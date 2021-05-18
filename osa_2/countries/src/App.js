@@ -63,7 +63,6 @@ const App = () => {
 
   const [searched, newSearched] = useState('')
   const [countries, setCountries] = useState([])
-  const [oldCountry, newCountry] = useState(false)
 
   useEffect(() => {
     axios
