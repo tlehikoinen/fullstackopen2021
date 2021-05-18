@@ -1,6 +1,7 @@
 const express = require('express')
 const morgan = require('morgan')
-const app = express()
+const cors = require('cors')
+
 const requestLogger = (request, response, next) => {
     console.log('Method:', request.method)
     console.log('Path:  ', request.path)
@@ -8,7 +9,10 @@ const requestLogger = (request, response, next) => {
     console.log('---')
     next()
   }
+
+const app = express()
 app.use(express.json())
+app.use(cors())
 
 morgan.token('body', (req, res) => JSON.stringify(req.body));
 app.use(morgan(':method :url :status :response-time ms :body '));
@@ -18,17 +22,17 @@ let persons = [
     {
         id: 1,
         name: "Arto Hellas",
-        number: "040-123456"
+        phonenumber: "040-123456"
     },
     {
         id: 2,
         name: "Ada Lovelace",
-        number: "39-44-5323523"
+        phonenumber: "39-44-5323523"
     },
     {
         id: 3,
         name: "Dan Abromov",
-        number: "12-43-234345"
+        phonenumber: "12-43-234345"
     }
 ]
 
@@ -66,14 +70,16 @@ app.delete('/api/persons/:id', (req, res) => {
 })
 
 app.post('/api/persons', (req, res) => {
+    console.log("heyy",req.body)
     const nextId = getRandomId()
     const userInfo = req.body
 
     const errorMsg = sentInfoErrorMsg(userInfo)
-    const errorJson = { errorMsg }
+    const errorJson = {userInfo, errorMsg }
+    console.log("error",errorMsg)
 
     if (errorMsg.length !== 0) {
-        res.status(400).json(errorJson)
+        res.json(errorJson)
     }
     else {
         userInfo.id = nextId
@@ -86,7 +92,7 @@ const sentInfoErrorMsg = (userInfo) => {
     const errorMessages = []
     if ([undefined, null, ""].includes(userInfo.name))
         errorMessages.push("Error with name")
-    if ([undefined, null, ""].includes(userInfo.number))
+    if ([undefined, null, ""].includes(userInfo.phonenumber))
         errorMessages.push("Error with number")
     if (persons.find(p => p.name === userInfo.name))
         errorMessages.push("Name must be unique")

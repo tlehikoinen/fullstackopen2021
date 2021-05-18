@@ -89,89 +89,70 @@ const App = () => {
 
   const addNewUser = (event) => {
     event.preventDefault()
-    const userInfo = nameAlreadyInList()
-    if (userInfo) {
-      const newUserInfo = { ...userInfo, phonenumber: newNumber }
-      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
-        personService
-          .updateUserPhonenumber(newUserInfo)
-          .then(() => {
-            updatePhonebook()
-            setChangeText(`Updated ${userInfo.name}`)
-          })
-          .catch(() => {
-            updatePhonebook()
-            setErrorText(`Information of ${newUserInfo.name} has already been removed from server`)
-          })
-      }
+    const newAddedUser = {"name" : newName, "phonenumber" : newNumber}
 
+    personService
+    .create(newAddedUser)
+    .then( res => {
+      if (res.data.errorMsg === undefined){
+        setChangeText(`${res.data.name} Added successfully`)
+        updatePhonebook()
+      }else {
+        if(res.data.errorMsg.length === 1 && res.data.errorMsg[0] === 'Name must be unique'){
+          console.log(res.data)
+          setErrorText(`${res.data.userInfo.name} already added, update number coming soon`)
+        }else {
+          setErrorText(`${res.data.errorMsg}`)
+        }
+      }
       setTimeout(() => {
         setErrorText(null)
-        setChangeText(null)
-      }, 2000)
+        setChangeText(null)}, 2000)
+    })
+  }
 
-  } else {
-    const newUser = {
-      name: newName,
-      phonenumber: newNumber
+    const deleteUser = (id) => {
+      const deletedUser = persons.find(p => p.id === id)
+
+      if (window.confirm(`Delete ${deletedUser.name} ?`)) {
+        personService
+          .deleteUser(id)
+          .then(() => updatePhonebook())
+
+        setChangeText(`Deleted ${deletedUser.name}`)
+        setTimeout(() => {
+          setChangeText(null)
+        }, 2000)
+      }
+
     }
-      personService
-        .create(newUser)
-  .then(() => {
-    updatePhonebook()
-    setNewName('')
-    setNewNumber('')
-  })
-setChangeText(`Added ${newUser.name}`)
-setTimeout(() => {
-  setChangeText(null)
-}, 2000)
+
+    function nameAlreadyInList() {
+      for (let i = 0; i < persons.length; i++) {
+        if (persons[i].name === newName)
+          return persons[i];
+      }
+      return false;
     }
 
+    const inputs = [
+      { inputName: 'name', inputValue: newName, placeHolder: 'Enter new name', onChange: handleNewUser },
+      { inputName: 'phone', inputValue: newNumber, placeHolder: 'Enter phonenumber', onChange: handleNewPhonenumber }
+    ]
+
+    return (
+      <div className="phonebook">
+        <h2>Phonebook</h2>
+        <ChangeText text={changeText} />
+        <ErrorText text={errorText} />
+        <Filter text="Filter shown with" inputText={filterText} onChange={handleNewFilter} />
+        <h3>Add a new</h3>
+        <InputForm inputTypes={inputs} />
+        <NewButton buttonInfo={{ type: "submit", text: "add", onClick: addNewUser }} />
+        <h3>Numbers</h3>
+        <RenderPhonebook filterText={filterText} persons={persons} handleDelete={deleteUser} />
+      </div>
+    )
   }
 
-const deleteUser = (id) => {
-  const deletedUser = persons.find(p => p.id === id)
-
-  if (window.confirm(`Delete ${deletedUser.name} ?`)) {
-    personService
-      .deleteUser(id)
-      .then(() => updatePhonebook())
-
-    setChangeText(`Deleted ${deletedUser.name}`)
-    setTimeout(() => {
-      setChangeText(null)
-    }, 2000)
-  }
-
-}
-
-function nameAlreadyInList() {
-  for (let i = 0; i < persons.length; i++) {
-    if (persons[i].name === newName)
-      return persons[i];
-  }
-  return false;
-}
-
-const inputs = [
-  { inputName: 'name', inputValue: newName, placeHolder: 'Enter new name', onChange: handleNewUser },
-  { inputName: 'phone', inputValue: newNumber, placeHolder: 'Enter phonenumber', onChange: handleNewPhonenumber }
-]
-
-return (
-  <div className="phonebook">
-    <h2>Phonebook</h2>
-    <ChangeText text={changeText} />
-    <ErrorText text={errorText} />
-    <Filter text="Filter shown with" inputText={filterText} onChange={handleNewFilter} />
-    <h3>Add a new</h3>
-    <InputForm inputTypes={inputs} />
-    <NewButton buttonInfo={{ type: "submit", text: "add", onClick: addNewUser }} />
-    <h3>Numbers</h3>
-    <RenderPhonebook filterText={filterText} persons={persons} handleDelete={deleteUser} />
-  </div>
-)
-}
-
-export default App
+  export default App
