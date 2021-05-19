@@ -69,42 +69,33 @@ app.delete('/api/persons/:id', (req, res, next) => {
         .catch(error => next(error))
 })
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
     console.log("heyy", req.body)
     const userInfo = req.body
 
-    Person.find({ name: userInfo.name }, (err, docs) => {
-        if (Object.keys(docs).length === 0) {
-            if (Object.keys(userInfo).length === 0 || userInfo.name === ("") || userInfo.phonenumber === ("")) {
-                return res.json({ error: 'Content missing' })
-            } else {
-                const person = new Person({
-                    name: userInfo.name,
-                    phonenumber: userInfo.phonenumber
-                })
-                person.save().then(savedPerson => {
-                    return res.json(savedPerson)
-                })
-            }
-        } else {
-            if (userInfo.phonenumber === ("")) {
-                return res.json({ error: 'Content missing' })
-            } else
-                return res.json({ name : docs[0].name, id: docs[0]._id, error: 'Name already exists' })
-        }
+    const person = new Person({
+        name: userInfo.name,
+        phonenumber: userInfo.phonenumber
     })
+
+    person.save()
+        .then(savedPerson => {
+            return res.json(savedPerson)
+        })
+        .catch(error => {
+            next(error)
+        })
+
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
-    console.log(req.body)
-    console.log(req.params.id)
     const updatedPerson =
     {
         name: req.body.name,
         phonenumber: req.body.phonenumber,
     }
 
-    Person.findByIdAndUpdate(req.params.id, updatedPerson, { new: true })
+    Person.findOneAndUpdate({ name : req.body.name }, updatedPerson, {returnOriginal: false})
         .then(updatedPerson => {
             res.json(updatedPerson)
         })
@@ -112,13 +103,12 @@ app.put('/api/persons/:id', (req, res, next) => {
 })
 
 
-
-
 const errorHandler = (error, req, res, next) => {
-    console.error(error.message)
 
     if (error.name === 'CastError') {
         return res.status(400).send({ error: 'malformatted id' })
+    } else if (error.name === 'ValidationError') {
+        return res.status(400).json({error: error.message})
     }
     next(error)
 }

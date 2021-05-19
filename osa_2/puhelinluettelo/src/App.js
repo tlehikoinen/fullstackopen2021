@@ -94,26 +94,18 @@ const App = () => {
     personService
       .create(newAddedUser)
       .then(res => {
-        if (res.data.error === undefined) {
           setChangeText(`${res.data.name} Added successfully`)
           updatePhonebook()
-        } else
-          if (res.data.error === 'Name already exists') {
-            if (window.confirm(`${res.data.name} already exists, update number?`)) {
-              newAddedUser.id = res.data.id
-              personService
-                .updateUserPhonenumber(newAddedUser)
-                .then(res => {
-                  setChangeText("updateSuccess")
-                  updatePhonebook()
-                })
-            }
-          } else {
-            setErrorText(res.data.error)
-          }
+
+        setTimeout(() => {
+          setChangeText(null)
+        }, 2000)
+      })
+      .catch (error => {
+        setErrorText(error.response.data.error)
+
         setTimeout(() => {
           setErrorText(null)
-          setChangeText(null)
         }, 2000)
       })
   }
