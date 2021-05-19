@@ -89,70 +89,70 @@ const App = () => {
 
   const addNewUser = (event) => {
     event.preventDefault()
-    const newAddedUser = {"name" : newName, "phonenumber" : newNumber}
+    const newAddedUser = { "name": newName, "phonenumber": newNumber }
 
     personService
-    .create(newAddedUser)
-    .then( res => {
-      if (res.data.errorMsg === undefined){
-        setChangeText(`${res.data.name} Added successfully`)
-        updatePhonebook()
-      }else {
-        if(res.data.errorMsg.length === 1 && res.data.errorMsg[0] === 'Name must be unique'){
-          console.log(res.data)
-          setErrorText(`${res.data.userInfo.name} already added, update number coming soon`)
-        }else {
-          setErrorText(`${res.data.errorMsg}`)
-        }
-      }
-      setTimeout(() => {
-        setErrorText(null)
-        setChangeText(null)}, 2000)
-    })
-  }
-
-    const deleteUser = (id) => {
-      const deletedUser = persons.find(p => p.id === id)
-
-      if (window.confirm(`Delete ${deletedUser.name} ?`)) {
-        personService
-          .deleteUser(id)
-          .then(() => updatePhonebook())
-
-        setChangeText(`Deleted ${deletedUser.name}`)
+      .create(newAddedUser)
+      .then(res => {
+        if (res.data.error === undefined) {
+          setChangeText(`${res.data.name} Added successfully`)
+          updatePhonebook()
+        } else
+          if (res.data.error === 'Name already exists') {
+            if (window.confirm(`${res.data.name} already exists, update number?`)) {
+              newAddedUser.id = res.data.id
+              personService
+                .updateUserPhonenumber(newAddedUser)
+                .then(res => {
+                  setChangeText("updateSuccess")
+                  updatePhonebook()
+                })
+            }
+          } else {
+            setErrorText(res.data.error)
+          }
         setTimeout(() => {
+          setErrorText(null)
           setChangeText(null)
         }, 2000)
-      }
-
-    }
-
-    function nameAlreadyInList() {
-      for (let i = 0; i < persons.length; i++) {
-        if (persons[i].name === newName)
-          return persons[i];
-      }
-      return false;
-    }
-
-    const inputs = [
-      { inputName: 'name', inputValue: newName, placeHolder: 'Enter new name', onChange: handleNewUser },
-      { inputName: 'phone', inputValue: newNumber, placeHolder: 'Enter phonenumber', onChange: handleNewPhonenumber }
-    ]
-
-    return (
-      <div className="phonebook">
-        <h2>Phonebook</h2>
-        <ChangeText text={changeText} />
-        <ErrorText text={errorText} />
-        <Filter text="Filter shown with" inputText={filterText} onChange={handleNewFilter} />
-        <h3>Add a new</h3>
-        <InputForm inputTypes={inputs} />
-        <NewButton buttonInfo={{ type: "submit", text: "add", onClick: addNewUser }} />
-        <h3>Numbers</h3>
-        <RenderPhonebook filterText={filterText} persons={persons} handleDelete={deleteUser} />
-      </div>
-    )
+      })
   }
 
-  export default App
+  const deleteUser = (id) => {
+    const deletedUser = persons.find(p => p.id === id)
+
+    if (window.confirm(`Delete ${deletedUser.name} ?`)) {
+      personService
+        .deleteUser(id)
+        .then(() => updatePhonebook())
+
+      setChangeText(`Deleted ${deletedUser.name}`)
+      setTimeout(() => {
+        setChangeText(null)
+      }, 2000)
+    }
+
+  }
+
+
+  const inputs = [
+    { inputName: 'name', inputValue: newName, placeHolder: 'Enter new name', onChange: handleNewUser },
+    { inputName: 'phone', inputValue: newNumber, placeHolder: 'Enter phonenumber', onChange: handleNewPhonenumber }
+  ]
+
+  return (
+    <div className="phonebook">
+      <h2>Phonebook</h2>
+      <ChangeText text={changeText} />
+      <ErrorText text={errorText} />
+      <Filter text="Filter shown with" inputText={filterText} onChange={handleNewFilter} />
+      <h3>Add a new</h3>
+      <InputForm inputTypes={inputs} />
+      <NewButton buttonInfo={{ type: "submit", text: "add", onClick: addNewUser }} />
+      <h3>Numbers</h3>
+      <RenderPhonebook filterText={filterText} persons={persons} handleDelete={deleteUser} />
+    </div>
+  )
+}
+
+export default App
