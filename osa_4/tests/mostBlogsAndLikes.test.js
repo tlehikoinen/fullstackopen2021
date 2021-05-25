@@ -1,4 +1,5 @@
-const favoriteBlog = require('../utils/list_helper').favoriteBlog
+const mostBlogs = require('../utils/list_helper').mostBlogs
+const mostLikes = require('../utils/list_helper').mostLikes
 
 const emptyBlogList = []
 const listWithOneBlog = [
@@ -62,37 +63,60 @@ const listWithManyBlogs = [
     },
   ]
 
-describe('Testing favorite blog', () => {
 
+describe('Testing to find author with most blogs', () => {
 
-    test('Empty list of blogs', () => {
-        const result = favoriteBlog(emptyBlogList)
+    test('When list of blogs is empty', () => {
+        const result = mostBlogs(emptyBlogList)
         expect(result).toEqual([])
     })
-    test('of list with one blog', () => {
-        const result = favoriteBlog(listWithOneBlog)
+
+    test('when list has only one blog', () => {
+        const result = mostBlogs(listWithOneBlog)
         expect(result).toEqual(
             {
-              _id: '5a422aa71b54a676234d17f8',
-              title: 'Go To Statement Considered Harmful',
-              author: 'Edsger W. Dijkstra',
-              url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-              likes: 2,
-              __v: 0
+                author: 'Edsger W. Dijkstra',
+                blogs : 1
             }
-          )
+        )
     })
-    test('of list with many blog', () => {
-        const result = favoriteBlog(listWithManyBlogs)
-        expect(result).toEqual({
-            _id: "5a422b3a1b54a676234d17f9",
-            title: "Canonical string reduction",
-            author: "Edsger W. Dijkstra",
-            url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
-            likes: 12,
-            __v: 0
-          })
+
+    test('when list has several blogs', () => {
+        const result = mostBlogs(listWithManyBlogs)
+        console.log("Author with most blogs: ", result)
+        expect(result).toEqual(
+            {
+                author : 'Robert C. Martin',
+                blogs: 3
+            }
+        )
     })
-    
 })
 
+describe('Testing to find author with most likes', () => {
+    test('When list of blogs is empty', () => {
+        const result = mostLikes(emptyBlogList)
+        expect(result).toEqual([])
+    })
+
+    test('when list has only one blog', () => {
+        const result = mostLikes(listWithOneBlog)
+        expect(result).toEqual(
+            {
+                author: 'Edsger W. Dijkstra',
+                likes : 2
+            }
+        )
+    })
+
+    test('when list has several blogs', () => {
+        const result = mostLikes(listWithManyBlogs)
+        console.log("Author with most likes: ", result)
+        expect(result).toEqual(
+            {
+                author : 'Edsger W. Dijkstra',
+                likes: 17
+            }
+        )
+    })
+})
