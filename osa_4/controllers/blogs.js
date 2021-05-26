@@ -12,11 +12,14 @@ blogsRouter.get('/', (request, response) => {
 
 blogsRouter.post('/', (request, response) => {
   const body = request.body
+  if (body.title === undefined || body.url === undefined) {
+    response.status(400).end()
+  } else {
   const blog = new Blog({
     title: body.title,
     author: body.author,
     url: body.url,
-    likes: body.likes,
+    likes: body.likes || 0,
   })
 
   blog
@@ -24,6 +27,7 @@ blogsRouter.post('/', (request, response) => {
     .then(result => {
       response.status(201).json(result)
     })
-})
+}
 
+})
 module.exports = blogsRouter
