@@ -30,4 +30,44 @@ blogsRouter.post('/', (request, response) => {
 }
 
 })
+
+blogsRouter.delete('/:id', async (request, response, next) => {
+  try{
+  const message = await Blog.findByIdAndDelete(request.params.id)
+  if (!message ){
+    response.status(404).json({Message: "Not found, couldn't delete"})
+  } 
+   response.status(202).json({Message: "Deleted Successfully"})
+  } catch(error){
+    next(error)
+  }
+})
+
+blogsRouter.put('/:id', async (request, response, next) => {
+  const body = request.body
+  try {
+    const message = await Blog.findByIdAndUpdate(request.params.id, body)
+      if(!message) {
+        response.status(404).json({error:"not found"})
+      } else {
+        response.status(200).send("update successful")
+      }
+  } catch (error) {
+      next(error)
+  }
+})
+
+blogsRouter.get('/:id', async (request, response, next) => {
+  try {
+    const blog = await Blog.findById(request.params.id)
+    if (blog) {
+      response.json(blog)
+    } else {
+      response.status(404).end()
+    }
+  } catch (error) {
+      next(error)
+  }
+})
+
 module.exports = blogsRouter
