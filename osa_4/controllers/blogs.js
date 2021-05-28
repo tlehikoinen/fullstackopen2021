@@ -3,16 +3,7 @@ const Blog = require('../models/blog')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
 const config = require('../utils/config')
-
-
-const getTokenFrom = request => {
-    const authorization = request.get('authorization')
-    if(authorization && authorization.toLowerCase().startsWith('bearer ')) {
-      return authorization.substring(7)
-    }
-    return null
-}
-
+const middleware = require('../utils/middleware')
 
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog
@@ -21,32 +12,30 @@ blogsRouter.get('/', async (request, response) => {
 })
 
 
-blogsRouter.post('/', async (request, response, next) => {
+blogsRouter.post('/', middleware.userExtractor, async (request, response, next) => {
 
   try {
     const body = request.body
-    //const token = getTokenFrom(request)
     const token = request.token
-    const decodedToken = jwt.verify(token, config.SECRET)
+    const user = request.user
 
-  if(!token || !decodedToken.id){
+  if(!token || !user.id){
     return response.status(401).json({error: 'Token missing or invalid'}).end()
   }
   
-    const user = await User.findById(decodedToken.id)
-
+    const userInDB = await User.findById(user.id)
 
     const blog = new Blog({
       title: body.title,
       author: body.author,
       url: body.url,
       likes: body.likes || 0,
-      user: user._id
+      user: userInDB._id
     })
 
     const savedBlog = await blog.save()
-    user.blogs = user.blogs.concat(savedBlog._id)
-    await user.save()
+    userInDB.blogs = userInDB.blogs.concat(savedBlog._id)
+    await userInDB.save()
     response.status(201).json(savedBlog)
 
   } catch (error) {
@@ -54,8 +43,18 @@ blogsRouter.post('/', async (request, response, next) => {
   }
 })
 
-blogsRouter.delete('/:id', async (request, response, next) => {
+
+blogsRouter.delete('/:id', middleware.userExtractor, async (request, response, next) => {
+
   try {
+  const user = request.user
+  const blogToBeDeleted = await Blog.findById(request.params.id)
+  const allowDelete = user.id.toString() === blogToBeDeleted.user.toString()
+
+  if(allowDelete === false) {
+    return response.json({error: 'false credentials'}).status(401).end()
+  }
+  
     const message = await Blog.findByIdAndDelete(request.params.id)
     if (!message) {
       response.status(404).json({ Message: "Not found, couldn't delete" })

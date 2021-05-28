@@ -4,8 +4,15 @@ const supertest = require('supertest')
 const app = require('../app')
 const { update } = require('../models/blog')
 const api = supertest(app)
-
+const middleware = require('../utils/middleware')
 const Blog = require('../models/blog')
+const User = require('../models/user')
+
+const initialUser = {
+    username: "testuser",
+    password: "testpassword"
+}
+
 const initialBlogs = [
     {
         title : "React patterns",
@@ -20,6 +27,63 @@ const initialBlogs = [
         likes : "5"
     }
 ]
+
+const michaelchan = {
+    username : "michaelchan",
+    user : "Michael Chan",
+    password : "michaelchan"
+}
+
+
+describe('Making initial user and testing login', () => {
+
+    test('Make sure user list has only initial users', async () => {
+        await User.deleteMany({})
+        await api.post('/api/users').send(michaelchan)
+   
+        
+        const user = await api
+        .get('/api/users')
+        .expect(200)
+
+        expect(user.body[0].username).toEqual(michaelchan.username)
+    })
+
+    test('Make sure that login works with initial user', async () => {
+        const loginInfo = {
+            username : michaelchan.username,
+            password : michaelchan.password
+        }
+        await api.post('/api/login').send(loginInfo)
+        .expect(200)
+    })
+    
+    test('Make sure that login fails with false credentials', async () => {
+        const falseLoginInfo = {
+            username : michaelchan.username,
+            password: "falsePassword"
+        }
+        await api.post('/api/login').send(falseLoginInfo)
+        .expect(401)
+    })
+
+    test('Make sure that I get token from login', async () => {
+        const loginInfo = {
+            username : michaelchan.username,
+            password : michaelchan.password
+        }
+        const response = await api.post('/api/login').send(loginInfo)
+        .expect(200)
+
+        console.log("hey trying to get token", response.body.token)
+
+        // This is where I left, I've the token 
+        //  .post 
+        //  .set('Authorization', token)
+    })
+    
+
+})
 
 
 
