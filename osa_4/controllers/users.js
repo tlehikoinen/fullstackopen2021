@@ -12,8 +12,8 @@ usersRouter.get('/', async (request, response) => {
 usersRouter.post('/', async (request, response, next) => {
     const body = request.body
 
-    if(body.password === undefined || body.password.length < 3){
-        return response.status(400).json({error: "error with password"}).end()
+    if (body.password === undefined || body.password.length < 3) {
+        return response.status(400).json({ error: "error with password" }).end()
     }
 
     const saltRounds = 10
@@ -26,8 +26,8 @@ usersRouter.post('/', async (request, response, next) => {
     })
 
     try {
-    const savedUser = await user.save()
-    response.status(200).json(savedUser).end()
+        const savedUser = await user.save()
+        response.status(200).json(savedUser).end()
     } catch (error) {
         next(error)
     }
