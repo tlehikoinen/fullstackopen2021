@@ -1,14 +1,12 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
-const jwt = require('jsonwebtoken')
-const config = require('../utils/config')
 const middleware = require('../utils/middleware')
 
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog
-  .find({}).populate('user', {username:1, name:1})
-    response.json(blogs.map(b => b.toJSON()))
+    .find({}).populate('user', { username: 1, name: 1 })
+  response.json(blogs.map(b => b.toJSON()))
 })
 
 
@@ -19,10 +17,10 @@ blogsRouter.post('/', middleware.userExtractor, async (request, response, next) 
     const token = request.token
     const user = request.user
 
-  if(!token || !user.id){
-    return response.status(401).json({error: 'Token missing or invalid'}).end()
-  }
-  
+    if (!token || !user.id) {
+      return response.status(401).json({ error: 'Token missing or invalid' }).end()
+    }
+
     const userInDB = await User.findById(user.id)
 
     const blog = new Blog({
@@ -47,14 +45,14 @@ blogsRouter.post('/', middleware.userExtractor, async (request, response, next) 
 blogsRouter.delete('/:id', middleware.userExtractor, async (request, response, next) => {
 
   try {
-  const user = request.user
-  const blogToBeDeleted = await Blog.findById(request.params.id)
-  const allowDelete = user.id.toString() === blogToBeDeleted.user.toString()
+    const user = request.user
+    const blogToBeDeleted = await Blog.findById(request.params.id)
+    const allowDelete = user.id.toString() === blogToBeDeleted.user.toString()
 
-  if(allowDelete === false) {
-    return response.json({error: 'false credentials'}).status(401).end()
-  }
-  
+    if (allowDelete === false) {
+      return response.json({ error: 'false credentials' }).status(401).end()
+    }
+
     const message = await Blog.findByIdAndDelete(request.params.id)
     if (!message) {
       response.status(404).json({ Message: "Not found, couldn't delete" })
@@ -65,14 +63,23 @@ blogsRouter.delete('/:id', middleware.userExtractor, async (request, response, n
   }
 })
 
-blogsRouter.put('/:id', async (request, response, next) => {
-  const body = request.body
+blogsRouter.put('/:id', middleware.userExtractor, async (request, response, next) => {
   try {
-    const message = await Blog.findByIdAndUpdate(request.params.id, body)
+    const user = request.user
+    const blogToBeUpdated = await Blog.findById(request.params.id)
+    const allowDelete = user.id.toString() === blogToBeUpdated.user.toString()
+
+    if (allowDelete === false) {
+      return response.json({ error: 'false credentials' }).status(401).end()
+    }
+
+    const body = request.body
+
+    const message = await Blog.findByIdAndUpdate(request.params.id, body, { new: true })
     if (!message) {
       response.status(404).json({ error: "not found" })
     } else {
-      response.status(200).send("update successful")
+      response.status(200).json(message)
     }
   } catch (error) {
     next(error)

@@ -10,7 +10,6 @@ const tokenExtractor = (request, response, next) => {
 }
 
 const userExtractor = (request, response, next) => {
-    console.log("from userextractor", jwt.verify(request.token, process.env.SECRET))
     request.user = jwt.verify(request.token, process.env.SECRET)
     next()
 }
