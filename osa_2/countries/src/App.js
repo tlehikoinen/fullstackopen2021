@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 
@@ -6,31 +7,27 @@ const SearchBox = (props) => (
 )
 
 const DisplayCountryInfo = (props) => {
-  let searchedCountries = []
-  props.countries
-    .filter(country => country.name.toLowerCase().includes(props.filterText.toLowerCase()))
-    .map((country) => (searchedCountries.push(country)))
+  
+  let countryCount = props.countries.length
 
-  let res = searchedCountries.length
-
-  if (res === 0)
+  if (countryCount === 0)
     return <></>
 
-  if (res >= 10) {
+  if (countryCount >= 10) {
     return <div>
       <p>Too many matches, specify another filter</p>
     </div>
   }
 
-  if (res > 1 && res < 10) {
+  if (countryCount > 1 && countryCount < 10) {
     return <div>
-      {searchedCountries.map((country, i) => <FilteredCountryList key={i} country={country} handleClick={props.handleClick} />)}
+      {props.countries.map((country, i) => <FilteredCountryList key={i} country={country} handleClick={props.handleClick} />)}
     </div>
   }
 
   return (
     <div>
-      <SingleCountry key={searchedCountries[0].numericCode} country={searchedCountries[0]} />
+      <SingleCountry key={props.countries[0].numericCode} country={props.countries[0]} />
     </div>
   )
 }
@@ -63,6 +60,8 @@ const App = () => {
 
   const [searched, newSearched] = useState('')
   const [countries, setCountries] = useState([])
+  const [displayedCountries, setDisplayedCountries] = useState([])
+  const [weatherCountry, setWeatherCountry] = useState('')
 
   useEffect(() => {
     axios
@@ -72,6 +71,28 @@ const App = () => {
         setCountries(response.data)
       })
   }, [])
+
+  useEffect(() => {
+    let searchedCountries = []
+    countries
+      .filter(country => country.name.toLowerCase().includes(searched.toLowerCase()))
+      .map((country) => (searchedCountries.push(country)))
+
+      if(searchedCountries.length === 1){
+        setWeatherCountry(searchedCountries[0])
+        setDisplayedCountries(searchedCountries)
+      }else {
+        setDisplayedCountries(searchedCountries)
+        setWeatherCountry('')
+      } 
+  }, [searched])
+
+  useEffect(() => {
+    if(weatherCountry){
+    const address = `http://api.weatherstack.com/current?access_key=${process.env.WEATHER_API_KEY}&query=${weatherCountry.capital}`
+      console.log("logging weather", address)
+    }
+  },[weatherCountry])
 
 
 
@@ -84,7 +105,7 @@ const App = () => {
   return (
     <div>
       <SearchBox id="countrySearchBox" text='find countries' placeholder="Enter a country" onChange={handleSearchBox} value={searched} />
-      <DisplayCountryInfo filterText={searched} countries={countries} handleClick={handleClick}/>
+      <DisplayCountryInfo filterText={searched} countries={displayedCountries} handleClick={handleClick}/>
     </div>
   )
 }
