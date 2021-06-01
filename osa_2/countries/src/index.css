@@ -19,3 +19,8 @@ code {
 .singleCountry img {
   width: 200px
 }
+
+#weatherIcon {
+  width: 75px;
+  height: 75px
+}
