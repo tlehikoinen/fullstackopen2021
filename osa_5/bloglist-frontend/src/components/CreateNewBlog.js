@@ -1,0 +1,56 @@
+import React, { useState } from 'react'
+import blogService from '../services/blogs'
+
+const CreateNewBlog = ({setNotificationMessage, setErrorMessage}) => {
+
+    const [title, setTitle] = useState('')
+    const [author, setAuthor] = useState('')
+    const [url, setUrl] = useState('')
+
+    const createNewBlog = async event => {
+        event.preventDefault()
+        try {
+            const newBlog = await blogService.createNew({title, author , url})
+            console.log(newBlog)
+            setNotificationMessage(`${newBlog.title} by ${newBlog.author} was successfully added`)
+        } catch (exception) {
+            setErrorMessage(exception.response.data.error)
+        }
+        setTimeout(()=> {
+            setNotificationMessage(null)
+            setErrorMessage(null)
+        },2000)
+    }
+
+    return (
+        <form onSubmit={createNewBlog}>
+            <h2>Create New</h2>
+            <div>
+                title:
+            <input
+                    type="text"
+                    value={title}
+                    name="Title"
+                    onChange={({ target }) => setTitle(target.value)}></input>
+            </div>
+            <div>
+                author:
+            <input
+                    type="text"
+                    value={author}
+                    name="Author"
+                    onChange={({ target }) => setAuthor(target.value)}></input>
+            </div>
+            <div>
+                url:
+            <input
+                    type="text"
+                    value={url}
+                    name="Url"
+                    onChange={({ target }) => setUrl(target.value)}></input>
+            </div>
+            <button type="submit">Create</button>
+        </form>
+    )
+}
+export default CreateNewBlog
