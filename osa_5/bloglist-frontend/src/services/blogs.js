@@ -13,22 +13,22 @@ const getAll = () => {
 }
 
 const createNew = async (newBlog) => {
-  const config = {headers : { Authorization : token}}
+  const config = { headers : { Authorization : token } }
   const response = await axios.post(baseUrl, newBlog, config)
   return response.data
 }
 
 const addLike = async (blogId, likes) => {
-  
-  const config = {headers : { Authorization : token}}
-  const response = await axios.put(`${baseUrl}/${blogId}`, {"likes": likes+1}, config)
+
+  const config = { headers : { Authorization : token } }
+  const response = await axios.put(`${baseUrl}/${blogId}`, { 'likes': likes+1 }, config)
   return response.data
-} 
+}
 
 const remove = async (blogId) => {
-  const config = {headers : { Authorization : token}}
+  const config = { headers : { Authorization : token } }
   const response = await axios.delete(`${baseUrl}/${blogId}`, config)
   return response.data
 }
 
-export default {addLike, getAll, createNew, remove, setToken }
+export default { addLike, getAll, createNew, remove, setToken }

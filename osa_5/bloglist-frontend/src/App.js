@@ -57,9 +57,9 @@ const App = () => {
 
   const loggedOutForm = () => {
     return (
-      <Login 
-      setUser={(user) => setUser(user)}
-      setErrorMessage={(errorMessage) => setErrorMessage(errorMessage)}/>
+      <Login
+        setUser={(user) => setUser(user)}
+        setErrorMessage={(errorMessage) => setErrorMessage(errorMessage)}/>
     )
   }
 
@@ -69,11 +69,11 @@ const App = () => {
         <h2>blogs</h2>
         <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
         <CreateNewBlog
-        createNewVisible = {createNewVisible} 
-        toggleCreateNewVisible = {() => toggleCreateNewVisible(!createNewVisible)}
-        setNotificationMessage = {(message) => {setNotificationMessage(message)}}
-        setErrorMessage = {(message) => {setErrorMessage(message)}}
-        updateBlogTable = {updateBlogTable}/>
+          createNewVisible = {createNewVisible}
+          toggleCreateNewVisible = {() => toggleCreateNewVisible(!createNewVisible)}
+          setNotificationMessage = {(message) => {setNotificationMessage(message)}}
+          setErrorMessage = {(message) => {setErrorMessage(message)}}
+          updateBlogTable = {updateBlogTable}/>
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} user={user} updateBlogTable={updateBlogTable} setNotificationMessage = {(message) => {setNotificationMessage(message)}} />)}
       </div>
