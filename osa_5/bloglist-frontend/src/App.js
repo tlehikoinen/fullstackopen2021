@@ -15,7 +15,7 @@ const App = () => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs.sort((a, b) => a.likes < b.likes ? 1 : -1))
     )
-  }, [notificationMessage])
+  }, [])
 
   useEffect(() => {
     const loggedUserJson = window.localStorage.getItem('loggedInUser')
@@ -25,6 +25,12 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
+
+  const updateBlogTable = () => {
+    blogService.getAll().then(blogs =>
+      setBlogs(blogs.sort((a, b) => a.likes < b.likes ? 1 : -1))
+    )
+  }
 
 
   const ErrorNotification = ({ message }) => {
@@ -66,9 +72,10 @@ const App = () => {
         createNewVisible = {createNewVisible} 
         toggleCreateNewVisible = {() => toggleCreateNewVisible(!createNewVisible)}
         setNotificationMessage = {(message) => {setNotificationMessage(message)}}
-        setErrorMessage = {(message) => {setErrorMessage(message)}}/>
+        setErrorMessage = {(message) => {setErrorMessage(message)}}
+        updateBlogTable = {updateBlogTable}/>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} setNotificationMessage = {(message) => {setNotificationMessage(message)}} />)}
+          <Blog key={blog.id} blog={blog} user={user} updateBlogTable={updateBlogTable} setNotificationMessage = {(message) => {setNotificationMessage(message)}} />)}
       </div>
     )
   }

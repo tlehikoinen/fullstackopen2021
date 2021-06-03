@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import blogService from '../services/blogs'
 
-const CreateNewBlog = ({setNotificationMessage, setErrorMessage, createNewVisible, toggleCreateNewVisible}) => {
+const CreateNewBlog = ({setNotificationMessage, setErrorMessage, createNewVisible, toggleCreateNewVisible, updateBlogTable}) => {
 
     const [title, setTitle] = useState('')
     const [author, setAuthor] = useState('')
@@ -14,7 +14,7 @@ const CreateNewBlog = ({setNotificationMessage, setErrorMessage, createNewVisibl
         event.preventDefault()
         try {
             const newBlog = await blogService.createNew({title, author , url})
-            console.log(newBlog)
+            updateBlogTable()
             setNotificationMessage(`${newBlog.title} by ${newBlog.author} was successfully added`)
             toggleCreateNewVisible()
         } catch (exception) {

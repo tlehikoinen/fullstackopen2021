@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import blogService from '../services/blogs'
-const Blog = ({blog, setNotificationMessage}) => {
+const Blog = ({blog, user, setNotificationMessage, updateBlogTable}) => {
 
   const blogStyle = {
     paddingTop: 10,
@@ -20,6 +20,7 @@ const Blog = ({blog, setNotificationMessage}) => {
   const [viewBlog, setViewBlog] = useState(false)
   const showWhenVisible = {display: viewBlog ? '' : 'none'}
   const hideWhenVisible = {display: viewBlog ? 'none' : ''}
+  const showForOwner = {display: {user}.user.username === blog.user.username ? '' : 'none'}
 
   const toggleViewBlog = () => {
     setViewBlog(!viewBlog)
@@ -28,12 +29,23 @@ const Blog = ({blog, setNotificationMessage}) => {
   const addLike = async () => {
     try {
       await blogService.addLike(blog.id, blog.likes)
-      setNotificationMessage('Like added')
-      setTimeout(() => {
-        setNotificationMessage(null)
-      },1000)
+      updateBlogTable()
     } catch (error) {
       console.log(error)
+    }
+  }
+
+  const removeBlog = async () => {
+
+    if(window.confirm('you sure')){
+      const response = await blogService.remove(blog.id) 
+      if (response.error === undefined){
+        updateBlogTable()
+        setNotificationMessage(response.Message)
+      }
+      setTimeout(() => {
+        setNotificationMessage(null)
+      }, 1000)
     }
   }
 
@@ -48,6 +60,9 @@ const Blog = ({blog, setNotificationMessage}) => {
         Url: {blog.url}<br/>
         Likes: {blog.likes} <button type="button" style={buttonStyle} onClick={addLike}>Like</button> <br/>
         <button type="button" style={buttonStyle} onClick={toggleViewBlog}>Hide</button>
+      <div style={showForOwner}>
+        <button type="button" style={buttonStyle} onClick={removeBlog}>Remove</button>
+      </div>
       </div>
     </div>
   )
