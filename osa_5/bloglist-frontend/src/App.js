@@ -13,7 +13,7 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs(blogs)
+      setBlogs(blogs.sort((a, b) => a.likes < b.likes ? 1 : -1))
     )
   }, [notificationMessage])
 
@@ -25,6 +25,7 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
+
 
   const ErrorNotification = ({ message }) => {
     if (message === null) {
