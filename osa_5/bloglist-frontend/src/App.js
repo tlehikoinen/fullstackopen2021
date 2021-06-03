@@ -67,7 +67,7 @@ const App = () => {
         setNotificationMessage = {(message) => {setNotificationMessage(message)}}
         setErrorMessage = {(message) => {setErrorMessage(message)}}/>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />)}
+          <Blog key={blog.id} blog={blog} setNotificationMessage = {(message) => {setNotificationMessage(message)}} />)}
       </div>
     )
   }

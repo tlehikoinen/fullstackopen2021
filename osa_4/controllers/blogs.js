@@ -64,12 +64,20 @@ blogsRouter.delete('/:id', middleware.userExtractor, async (request, response, n
 })
 
 blogsRouter.put('/:id', middleware.userExtractor, async (request, response, next) => {
+
   try {
     const user = request.user
     const blogToBeUpdated = await Blog.findById(request.params.id)
-    const allowDelete = user.id.toString() === blogToBeUpdated.user.toString()
+    const allowUpdate = user.id.toString() === blogToBeUpdated.user.toString()
 
-    if (allowDelete === false) {
+    console.log()
+
+    if (request.body.likes === blogToBeUpdated.likes+1 && Object.keys(request.body).length === 1)  {
+        await Blog.findByIdAndUpdate(request.params.id, request.body, { new : true })
+        return response.json({message: 'Added like'}).status(201).end()
+      }
+
+    if (allowUpdate === false) {
       return response.json({ error: 'false credentials' }).status(401).end()
     }
 

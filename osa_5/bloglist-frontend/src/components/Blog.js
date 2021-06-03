@@ -1,5 +1,6 @@
 import React, {useState} from 'react'
-const Blog = ({blog}) => {
+import blogService from '../services/blogs'
+const Blog = ({blog, setNotificationMessage}) => {
 
   const blogStyle = {
     paddingTop: 10,
@@ -12,8 +13,9 @@ const Blog = ({blog}) => {
   const buttonStyle = {
     background:'none',
     borderRadius:'5px',
-    borderWidth:'1px'
+    borderWidth:'1px',
   }
+
 
   const [viewBlog, setViewBlog] = useState(false)
   const showWhenVisible = {display: viewBlog ? '' : 'none'}
@@ -21,6 +23,18 @@ const Blog = ({blog}) => {
 
   const toggleViewBlog = () => {
     setViewBlog(!viewBlog)
+  }
+  
+  const addLike = async () => {
+    try {
+      await blogService.addLike(blog.id, blog.likes)
+      setNotificationMessage('Like added')
+      setTimeout(() => {
+        setNotificationMessage(null)
+      },1000)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
@@ -32,7 +46,7 @@ const Blog = ({blog}) => {
         <h3>{blog.title}</h3>
         By author: {blog.author}<br/>
         Url: {blog.url}<br/>
-        Likes: {blog.likes} 
+        Likes: {blog.likes} <button type="button" style={buttonStyle} onClick={addLike}>Like</button> <br/>
         <button type="button" style={buttonStyle} onClick={toggleViewBlog}>Hide</button>
       </div>
     </div>
