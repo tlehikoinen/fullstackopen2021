@@ -9,6 +9,7 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   const [notificationMessage, setNotificationMessage] = useState(null)
+  const [createNewVisible, toggleCreateNewVisible] = useState(false)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -60,7 +61,9 @@ const App = () => {
       <div>
         <h2>blogs</h2>
         <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
-        <CreateNewBlog 
+        <CreateNewBlog
+        createNewVisible = {createNewVisible} 
+        toggleCreateNewVisible = {() => toggleCreateNewVisible(!createNewVisible)}
         setNotificationMessage = {(message) => {setNotificationMessage(message)}}
         setErrorMessage = {(message) => {setErrorMessage(message)}}/>
         {blogs.map(blog =>
