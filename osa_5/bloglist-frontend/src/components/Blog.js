@@ -52,11 +52,11 @@ const Blog = ({ blog, user, setNotificationMessage, updateBlogTable }) => {
   }
 
   return (
-    <div style={blogStyle}>
-      <div style={hideWhenVisible} >
+    <div className="blogDiv" style={blogStyle}>
+      <div className="visibleDiv" style={hideWhenVisible} >
         {blog.title} {blog.author} <button type="button" style={buttonStyle} onClick={toggleViewBlog}>View</button>
       </div>
-      <div style={showWhenVisible}>
+      <div className="hiddenDiv" style={showWhenVisible}>
         <h3>{blog.title}</h3>
         By author: {blog.author}<br/>
         Url: {blog.url}<br/>
