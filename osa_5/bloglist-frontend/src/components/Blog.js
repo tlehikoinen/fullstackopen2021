@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import blogService from '../services/blogs'
 import PropTypes from 'prop-types'
 
-const Blog = ({ blog, user, setNotificationMessage, updateBlogTable }) => {
+const Blog = ({ blog, user, setNotificationMessage, updateBlogTable, addLike }) => {
 
   const blogStyle = {
     paddingTop: 10,
@@ -28,17 +28,7 @@ const Blog = ({ blog, user, setNotificationMessage, updateBlogTable }) => {
     setViewBlog(!viewBlog)
   }
 
-  const addLike = async () => {
-    try {
-      await blogService.addLike(blog.id, blog.likes)
-      updateBlogTable()
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
   const removeBlog = async () => {
-
     if(window.confirm('you sure')){
       const response = await blogService.remove(blog.id)
       if (response.error === undefined){
@@ -51,6 +41,10 @@ const Blog = ({ blog, user, setNotificationMessage, updateBlogTable }) => {
     }
   }
 
+  const incrementLike = () => {
+    addLike(blog.id, blog.likes)
+  }
+
   return (
     <div className="blogDiv" style={blogStyle}>
       <div className="visibleDiv" style={hideWhenVisible} >
@@ -60,7 +54,7 @@ const Blog = ({ blog, user, setNotificationMessage, updateBlogTable }) => {
         <h3>{blog.title}</h3>
         By author: {blog.author}<br/>
         Url: {blog.url}<br/>
-        Likes: {blog.likes} <button type="button" style={buttonStyle} onClick={addLike}>Like</button> <br/>
+        Likes: {blog.likes} <button type="button" style={buttonStyle} onClick={incrementLike}>Like</button> <br/>
         <button type="button" style={buttonStyle} onClick={toggleViewBlog}>Hide</button>
         <div style={showForOwner}>
           <button type="button" style={buttonStyle} onClick={removeBlog}>Remove</button>

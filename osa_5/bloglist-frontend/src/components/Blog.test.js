@@ -3,7 +3,6 @@ import '@testing-library/jest-dom/extend-expect'
 import { render, fireEvent } from '@testing-library/react'
 import Blog from './Blog'
 
-
 describe('<Blog />', () => {
   let blogComponent
   const blog = {
@@ -24,10 +23,11 @@ describe('<Blog />', () => {
   const updateBlogTable = () => {
     return 0
   }
+  const mockHandler = jest.fn()
 
   beforeEach(() => {
     blogComponent = render(
-      <Blog blog={blog} user={user} setNotificationMessage={setNotificationMessage} updateBlogTable={updateBlogTable}/>
+      <Blog blog={blog} user={user} addLike={mockHandler} setNotificationMessage={setNotificationMessage} updateBlogTable={updateBlogTable}/>
     )
   })
 
@@ -50,4 +50,12 @@ describe('<Blog />', () => {
     expect(hiddenDiv).not.toHaveStyle('display: none')
   })
 
+
+  // Checking if clicking 'like' btn results in eventhandler call, doubleclicking too fast gives error in my solution
+  test('Clicking "like" btn calls its eventhandler once', () => {
+
+    const button = blogComponent.getByText('Like')
+    fireEvent.click(button)
+    expect(mockHandler.mock.calls).toHaveLength(1)
+  })
 })

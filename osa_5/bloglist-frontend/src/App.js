@@ -58,9 +58,18 @@ const App = () => {
   const loggedOutForm = () => {
     return (
       <Login
-        setUser={(user) => setUser(user)}
-        setErrorMessage={(errorMessage) => setErrorMessage(errorMessage)}/>
+        setUser={setUser}
+        setErrorMessage={setErrorMessage}/>
     )
+  }
+
+  const addLike = async (id, likes) => {
+    try {
+      await blogService.addLike(id, likes)
+    } catch (error) {
+      console.log(error)
+    }
+    updateBlogTable()
   }
 
   const loggedInForm = () => {
@@ -71,11 +80,11 @@ const App = () => {
         <CreateNewBlog
           createNewVisible = {createNewVisible}
           toggleCreateNewVisible = {() => toggleCreateNewVisible(!createNewVisible)}
-          setNotificationMessage = {(message) => {setNotificationMessage(message)}}
-          setErrorMessage = {(message) => {setErrorMessage(message)}}
-          updateBlogTable = {updateBlogTable}/>
+          setNotificationMessage = {setNotificationMessage}
+          setErrorMessage = {setErrorMessage}
+          updateBlogTable = {updateBlogTable} />
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} user={user} updateBlogTable={updateBlogTable} setNotificationMessage = {(message) => {setNotificationMessage(message)}} />)}
+          <Blog key={blog.id} blog={blog} user={user} addLike = {addLike} updateBlogTable={updateBlogTable} setNotificationMessage = {(message) => {setNotificationMessage(message)}} />)}
       </div>
     )
   }
