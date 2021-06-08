@@ -47,14 +47,14 @@ const Blog = ({ blog, user, setNotificationMessage, updateBlogTable, addLike }) 
 
   return (
     <div className="blogDiv" style={blogStyle}>
-      <div className="visibleDiv" style={hideWhenVisible} >
+      <div className="visibleDiv" style={hideWhenVisible}>
         {blog.title} {blog.author} <button type="button" style={buttonStyle} onClick={toggleViewBlog}>View</button>
       </div>
       <div className="hiddenDiv" style={showWhenVisible}>
         <h3>{blog.title}</h3>
         By author: {blog.author}<br/>
         Url: {blog.url}<br/>
-        Likes: {blog.likes} <button type="button" style={buttonStyle} onClick={incrementLike}>Like</button> <br/>
+        Likes: {blog.likes} <button type="button" id="like-button" style={buttonStyle} onClick={incrementLike}>Like</button> <br/>
         <button type="button" style={buttonStyle} onClick={toggleViewBlog}>Hide</button>
         <div style={showForOwner}>
           <button type="button" style={buttonStyle} onClick={removeBlog}>Remove</button>

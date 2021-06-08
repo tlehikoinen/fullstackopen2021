@@ -27,7 +27,7 @@ const initialBlogs = [
 
 const michaelchan = {
     username: "michaelchan",
-    user: "Michael Chan",
+    name: "Michael Chan",
     password: "michaelchan"
 }
 

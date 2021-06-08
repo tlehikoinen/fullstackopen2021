@@ -37,6 +37,7 @@ const CreateNewBlog = ({ setNotificationMessage, setErrorMessage, createNewVisib
           <div>
                         title:
             <input
+              id="newBlogTitle"
               type="text"
               value={title}
               name="Title"
@@ -45,6 +46,7 @@ const CreateNewBlog = ({ setNotificationMessage, setErrorMessage, createNewVisib
           <div>
                         author:
             <input
+              id="newBlogAuthor"
               type="text"
               value={author}
               name="Author"
@@ -53,13 +55,14 @@ const CreateNewBlog = ({ setNotificationMessage, setErrorMessage, createNewVisib
           <div>
                         url:
             <input
+              id="newBlogUrl"
               type="text"
               value={url}
               name="Url"
               onChange={({ target }) => setUrl(target.value)}></input>
           </div>
-          <button type="submit">Create</button>
-          <button type="button" onClick={toggleCreateNewVisible}>Cancel</button>
+          <button id="submitNewBlog-button" type="submit">Create</button>
+          <button id="cancelNewBlog-button" type="button" onClick={toggleCreateNewVisible}>Cancel</button>
         </form>
       </div>
     </div>
