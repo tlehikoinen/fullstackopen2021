@@ -1,3 +1,4 @@
+// Filter ennen connect()
 const notificationReducer = (state = 'Hello and welcome', action) => {
     switch(action.type) {
         case 'NEW_NOTIFICATION':
