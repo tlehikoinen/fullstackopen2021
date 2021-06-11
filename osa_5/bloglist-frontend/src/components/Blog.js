@@ -18,7 +18,6 @@ const Blog = ({ blog, user, setNotificationMessage, updateBlogTable, addLike }) 
     borderWidth:'1px',
   }
 
-
   const [viewBlog, setViewBlog] = useState(false)
   const showWhenVisible = { display: viewBlog ? '' : 'none' }
   const hideWhenVisible = { display: viewBlog ? 'none' : '' }

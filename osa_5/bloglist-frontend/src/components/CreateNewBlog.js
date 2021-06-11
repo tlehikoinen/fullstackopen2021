@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
-import blogService from '../services/blogs'
 
-const CreateNewBlog = ({ setNotificationMessage, setErrorMessage, createNewVisible, toggleCreateNewVisible, updateBlogTable }) => {
+const CreateNewBlog = ({ createNewVisible, toggleCreateNewVisible, createNewBlog }) => {
 
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
@@ -10,29 +9,23 @@ const CreateNewBlog = ({ setNotificationMessage, setErrorMessage, createNewVisib
   const hideWhenVisible = { display: createNewVisible ? 'none' : '' }
   const showWhenVisible = { display: createNewVisible ? '' : 'none' }
 
-  const createNewBlog = async event => {
+  const createNew = event => {
     event.preventDefault()
-    try {
-      const newBlog = await blogService.createNew({ title, author , url })
-      updateBlogTable()
-      setNotificationMessage(`${newBlog.title} by ${newBlog.author} was successfully added`)
-      toggleCreateNewVisible()
-    } catch (exception) {
-      setErrorMessage(exception.response.data.error)
+    const blog = {
+      title,
+      author,
+      url
     }
-    setTimeout(() => {
-      setNotificationMessage(null)
-      setErrorMessage(null)
-    },2000)
+    createNewBlog(blog)
   }
 
   return (
     <div>
       <div style={hideWhenVisible}>
-        <button type="button" onClick={toggleCreateNewVisible}>Create new</button>
+        <button id="create-new-btn" type="button" onClick={toggleCreateNewVisible}>Create new</button>
       </div>
-      <div style={showWhenVisible}>
-        <form onSubmit={createNewBlog}>
+      <div className="createNew" style={showWhenVisible}>
+        <form className="newForm" onSubmit={createNew}>
           <h2>Create New</h2>
           <div>
                         title:

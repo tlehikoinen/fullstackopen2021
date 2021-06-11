@@ -3,6 +3,7 @@ import Blog from './components/Blog'
 import CreateNewBlog from './components/CreateNewBlog'
 import Login from './components/Login'
 import blogService from './services/blogs'
+import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -55,14 +56,6 @@ const App = () => {
     )
   }
 
-  const loggedOutForm = () => {
-    return (
-      <Login
-        setUser={setUser}
-        setErrorMessage={setErrorMessage}/>
-    )
-  }
-
   const addLike = async (id, likes) => {
     try {
       await blogService.addLike(id, likes)
@@ -72,7 +65,46 @@ const App = () => {
     updateBlogTable()
   }
 
-  const loggedInForm = () => {
+  const handleLogin = async (user) => {
+    event.preventDefault()
+    try {
+      const loggedInUser = await loginService.login({ username: user.username, password: user.password })
+      window.localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser))
+      blogService.setToken(loggedInUser.token)
+      setUser(loggedInUser)
+    } catch (exception) {
+      setErrorMessage('Wrong credentials')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 2000)
+    }
+  }
+
+  const createNewBlog = async blog => {
+    try {
+      const newBlog = await blogService.createNew(blog)
+      updateBlogTable()
+      setNotificationMessage(`${newBlog.title} by ${newBlog.author} was successfully added`)
+      toggleCreateNewVisible()
+    } catch (exception) {
+      setErrorMessage(exception.response.data.error)
+    }
+    setTimeout(() => {
+      setNotificationMessage(null)
+      setErrorMessage(null)
+    },2000)
+  }
+
+  const LoggedOutForm = () => {
+    return (
+      <Login
+        setUser={setUser}
+        setErrorMessage={setErrorMessage}
+        handleLogin={handleLogin}/>
+    )
+  }
+
+  const LoggedInForm = () => {
     return (
       <div>
         <h2>blogs</h2>
@@ -80,9 +112,7 @@ const App = () => {
         <CreateNewBlog
           createNewVisible = {createNewVisible}
           toggleCreateNewVisible = {() => toggleCreateNewVisible(!createNewVisible)}
-          setNotificationMessage = {setNotificationMessage}
-          setErrorMessage = {setErrorMessage}
-          updateBlogTable = {updateBlogTable} />
+          createNewBlog = {createNewBlog}/>
         <div className="blogs">
           {blogs.map(blog =>
             <Blog key={blog.id} blog={blog} user={user} addLike = {addLike} updateBlogTable={updateBlogTable} setNotificationMessage = {(message) => {setNotificationMessage(message)}} />)}
@@ -106,8 +136,8 @@ const App = () => {
     <div>
       <ErrorNotification message={errorMessage} />
       <Notification message={notificationMessage} />
-      {user === null && loggedOutForm()}
-      {user !== null && loggedInForm()}
+      {user === null && <LoggedOutForm />}
+      {user !== null && <LoggedInForm />}
     </div>
   )
 }

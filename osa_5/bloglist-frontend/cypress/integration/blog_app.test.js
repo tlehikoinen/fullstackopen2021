@@ -18,10 +18,16 @@ describe('Blog app', function () {
     cy.contains('password')
   })
 
-  describe('Login', function() {
+  describe('Logins', function() {
+    beforeEach(function() {
+      cy.visit('http://localhost:3000')
+    })
     it('succeeds with correct credentials', function() {
-      cy.get('#username').type('testuser')
+      cy.contains('username')
+      cy.contains('password')
+      cy.get('#username').type('username')
       cy.get('#password').type('password')
+
       cy.get('#login-button').click()
       cy.contains('Test User logged in')
     })
