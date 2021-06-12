@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
-import blogService from '../services/blogs'
 
-const CreateNewBlog = ({ setNotification,  createNewVisible, toggleCreateNewVisible, updateBlogTable }) => {
+const CreateNewBlog = ({ create, createNewVisible, toggleCreateNewVisible }) => {
 
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
@@ -10,17 +9,14 @@ const CreateNewBlog = ({ setNotification,  createNewVisible, toggleCreateNewVisi
   const hideWhenVisible = { display: createNewVisible ? 'none' : '' }
   const showWhenVisible = { display: createNewVisible ? '' : 'none' }
 
-  const createNewBlog = async event => {
+  const createNew = async event => {
     event.preventDefault()
-    try {
-      const newBlog = await blogService.createNew({ title, author , url })
-      updateBlogTable()
-      setNotification(`${newBlog.title} by ${newBlog.author} was successfully added`, 'default', 3)
-      toggleCreateNewVisible()
-    } catch (exception) {
-      setNotification(exception.response.data.error, 'error', 3)
+    const blog = {
+      title,
+      author,
+      url
     }
-
+    create(blog)
   }
 
   return (
@@ -29,7 +25,7 @@ const CreateNewBlog = ({ setNotification,  createNewVisible, toggleCreateNewVisi
         <button type="button" onClick={toggleCreateNewVisible}>Create new</button>
       </div>
       <div style={showWhenVisible}>
-        <form onSubmit={createNewBlog}>
+        <form onSubmit={createNew}>
           <h2>Create New</h2>
           <div>
                         title:

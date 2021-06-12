@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
-import blogService from '../services/blogs'
 import PropTypes from 'prop-types'
 
-const Blog = ({ blog, user, setNotification, updateBlogTable, addLike }) => {
+const Blog = ({ blog, user, addLike, deleteBlog }) => {
 
   const blogStyle = {
     paddingTop: 10,
@@ -28,16 +27,9 @@ const Blog = ({ blog, user, setNotification, updateBlogTable, addLike }) => {
     setViewBlog(!viewBlog)
   }
 
-  const removeBlog = async () => {
+  const remove = () => {
     if(window.confirm('you sure')){
-      try {
-        const response = await blogService.remove(blog.id)
-        updateBlogTable()
-        setNotification(response.Message, 'default', 3)
-      } catch (error) {
-        updateBlogTable()
-        setNotification('Was already deleted', 'error', 3)
-      }
+      deleteBlog(blog.id)
     }
   }
 
@@ -57,7 +49,7 @@ const Blog = ({ blog, user, setNotification, updateBlogTable, addLike }) => {
         Likes: {blog.likes} <button type="button" id="like-button" style={buttonStyle} onClick={incrementLike}>Like</button> <br/>
         <button type="button" style={buttonStyle} onClick={toggleViewBlog}>Hide</button>
         <div style={showForOwner}>
-          <button type="button" style={buttonStyle} onClick={removeBlog}>Remove</button>
+          <button type="button" style={buttonStyle} onClick={remove}>Remove</button>
         </div>
       </div>
     </div>
@@ -66,9 +58,7 @@ const Blog = ({ blog, user, setNotification, updateBlogTable, addLike }) => {
 
 Blog.propTypes = {
   user: PropTypes.object.isRequired,
-  blog: PropTypes.object.isRequired,
-  setNotification: PropTypes.func.isRequired,
-  updateBlogTable: PropTypes.func.isRequired
+  blog: PropTypes.object.isRequired
 }
 
 export default Blog
