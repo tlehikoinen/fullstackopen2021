@@ -121,7 +121,7 @@ const App = () => {
   const LoggedInForm = () => {
     return (
       <div>
-        <h2>blogs</h2>
+        <h2>Blogs</h2>
         <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
         <CreateNewBlog
           createNewVisible = {createNewVisible}
