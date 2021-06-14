@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from 'react'
+import {
+  BrowserRouter as Router,
+  Switch, Route, Link
+} from 'react-router-dom'
 import Blog from './components/Blog'
 import CreateNewBlog from './components/CreateNewBlog'
 import Login from './components/Login'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
+import loginService from './services/login'
 import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
 import { getBlogsFromServer, setNewBlog, addLikeToBlog, removeBlog } from './reducers/blogReducer'
 import { clearUserInfo, setUserInfo } from './reducers/userReducer'
+import { getUsersAndBlogs } from './reducers/usersAndBlogsReducer'
 
 const App = () => {
 
@@ -16,6 +22,7 @@ const App = () => {
 
   useEffect(() => {
     dispatch(getBlogsFromServer())
+    dispatch(getUsersAndBlogs())
   }, [dispatch])
 
   useEffect(() => {
@@ -44,6 +51,7 @@ const App = () => {
       setNotificationWithType(`${newBlog.title} by ${newBlog.author} was successfully added`, 'default', 3)
       dispatch(setNewBlog(newBlog))
       dispatch(getBlogsFromServer())
+      dispatch(getUsersAndBlogs())
       toggleCreateNewVisible(!createNewVisible)
     } catch (exception) {
       setNotificationWithType(exception.response.data.error, 'error', 3)
@@ -51,13 +59,29 @@ const App = () => {
   }
 
   const deleteBlog = async (id) => {
+
     try {
       const response = await blogService.remove(id)
-      setNotificationWithType(response.Message, 'default', 3)
       dispatch(removeBlog(id))
+      dispatch(getUsersAndBlogs())
+      setNotificationWithType(response.Message, 'default', 3)
     } catch (error) {
       dispatch(getBlogsFromServer())
       setNotificationWithType('Was already deleted', 'error', 3)
+    }
+
+  }
+
+  const handleLogin = async (loginInfo) => {
+
+    try {
+      const user = await loginService.login(loginInfo)
+      dispatch(setUserInfo(user))
+      window.localStorage.setItem('loggedInUser', JSON.stringify(user))
+      blogService.setToken(user.token)
+      setNotificationWithType('Logged in successfully', 'default', 1)
+    } catch (exception) {
+      setNotificationWithType('Wrong credentials', 'error', 5)
     }
 
   }
@@ -91,26 +115,67 @@ const App = () => {
     )
   }
 
-  const LoggedInForm = () => {
-    const user = useSelector ( state => state.user.user)
+  const Users = () => {
+    const usersAndBlogs = useSelector(state => state.usersAndBlogs.data)
     return (
       <div>
-        <h2>Blogs</h2>
+        <h2>Users</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Blogs</th>
+            </tr>
+          </thead>
+          <tbody>
+            {usersAndBlogs.map(u =>
+              <tr key={u.id}>
+                <td>{u.name}</td>
+                <td>{u.blogs.length}</td>
+              </tr>)}
+          </tbody>
+        </table>
+      </div>
+    )
+  }
+
+  const LoggedInForm = () => {
+    const user = useSelector(state => state.user.user)
+    return (
+      <div>
         <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
-        <CreateNewBlog
-          createNewVisible = {createNewVisible}
-          toggleCreateNewVisible = {() => toggleCreateNewVisible(!createNewVisible)}
-          create={createNewBlog} />
-        <Blogs />
+        <Router>
+          <Link to='/blogs'>blogs </Link>
+          <Link to='/users'>users</Link>
+          <Switch>
+            <Route path='/blogs'>
+              <h2>Blogs</h2>
+              <div>
+                <CreateNewBlog
+                  createNewVisible={createNewVisible}
+                  toggleCreateNewVisible={() => toggleCreateNewVisible(!createNewVisible)}
+                  create={createNewBlog} />
+                <Blogs />
+              </div>
+            </Route>
+            <Route path='/users'>
+              <Users />
+            </Route>
+            <Route path='/'>
+              <h2>Blogs are great</h2>
+            </Route>
+          </Switch>
+        </Router>
       </div>
     )
   }
 
   const LoggedOutForm = () => {
     return (
-      <Login
-        setNotification={setNotificationWithType}
-        setUserInfo={stateSetUser}/>
+      <div>
+        <Login
+          login={handleLogin}/>
+      </div>
     )
   }
 

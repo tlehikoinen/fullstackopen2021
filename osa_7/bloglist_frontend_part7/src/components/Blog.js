@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
 const Blog = ({ blog, user, addLike, deleteBlog }) => {
+  console.log('blog', blog)
 
   const blogStyle = {
     paddingTop: 10,
@@ -45,7 +46,7 @@ const Blog = ({ blog, user, addLike, deleteBlog }) => {
       <div className="hiddenDiv" style={showWhenVisible}>
         <h3>{blog.title}</h3>
         By author: {blog.author}<br/>
-        Url: {blog.url}<br/>
+        Url: <a href={blog.url} target="_blank" rel="noreferrer">{blog.url}</a><br/>
         Likes: {blog.likes} <button type="button" id="like-button" style={buttonStyle} onClick={incrementLike}>Like</button> <br/>
         <button type="button" style={buttonStyle} onClick={toggleViewBlog}>Hide</button>
         <div style={showForOwner}>
