@@ -21,7 +21,7 @@ const Blog = ({ blog, user, addLike, deleteBlog }) => {
   const [viewBlog, setViewBlog] = useState(false)
   const showWhenVisible = { display: viewBlog ? '' : 'none' }
   const hideWhenVisible = { display: viewBlog ? 'none' : '' }
-  const showForOwner = { display: { user }.user.username === blog.user.username ? '' : 'none' }
+  const showForOwner = { display: user.username === blog.user.username ? '' : 'none' }
 
   const toggleViewBlog = () => {
     setViewBlog(!viewBlog)

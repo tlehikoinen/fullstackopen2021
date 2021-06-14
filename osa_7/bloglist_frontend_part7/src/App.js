@@ -7,11 +7,10 @@ import blogService from './services/blogs'
 import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
 import { getBlogsFromServer, setNewBlog, addLikeToBlog, removeBlog } from './reducers/blogReducer'
-
+import { clearUserInfo, setUserInfo } from './reducers/userReducer'
 
 const App = () => {
 
-  const [user, setUser] = useState(null)
   const [createNewVisible, toggleCreateNewVisible] = useState(false)
   const dispatch = useDispatch()
 
@@ -23,8 +22,10 @@ const App = () => {
     const loggedUserJson = window.localStorage.getItem('loggedInUser')
     if (loggedUserJson) {
       const user = JSON.parse(loggedUserJson)
-      setUser(user)
+      stateSetUser(user)
       blogService.setToken(user.token)
+    } else {
+      dispatch(clearUserInfo())
     }
   }, [])
 
@@ -64,7 +65,7 @@ const App = () => {
   const handleLogout = (event) => {
     event.preventDefault()
     window.localStorage.clear()
-    setUser(null)
+    dispatch(clearUserInfo())
     setNotificationWithType('Logged out successfully', 'default', 1)
   }
 
@@ -72,10 +73,14 @@ const App = () => {
     dispatch(setNotification(message, type, time))
   }
 
+  const stateSetUser = (user) => {
+    dispatch(setUserInfo(user))
+  }
 
 
-  const Blogs= () => {
+  const Blogs = () => {
     const blogs = useSelector(state => state.blogs.blogs)
+    const user = useSelector ( state => state.user.user)
     return (
       <div>
         <div className="blogs">
@@ -87,6 +92,7 @@ const App = () => {
   }
 
   const LoggedInForm = () => {
+    const user = useSelector ( state => state.user.user)
     return (
       <div>
         <h2>Blogs</h2>
@@ -103,16 +109,16 @@ const App = () => {
   const LoggedOutForm = () => {
     return (
       <Login
-        setUser={setUser}
-        setNotification={setNotificationWithType}/>
+        setNotification={setNotificationWithType}
+        setUserInfo={stateSetUser}/>
     )
   }
 
   return (
     <div>
-      <Notification message={ useSelector(state => state.message)} type={ useSelector(state => state.type)}/>
-      {user === null && <LoggedOutForm />}
-      {user !== null && <LoggedInForm />}
+      <Notification message={ useSelector(state => state.message)} type={ useSelector(state => state.type)} />
+      { (useSelector(state => state.user.loggedIn)) === false && <LoggedOutForm />}
+      { (useSelector(state => state.user.loggedIn)) === true && <LoggedInForm />}
     </div>
   )
 }

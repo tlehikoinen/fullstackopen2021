@@ -20,14 +20,14 @@ describe('<Blog />', () => {
   const setNotificationMessage = () => {
     return 0
   }
-  const updateBlogTable = () => {
+  const deleteBlogTable = () => {
     return 0
   }
   const mockHandler = jest.fn()
 
   beforeEach(() => {
     blogComponent = render(
-      <Blog blog={blog} user={user} addLike={mockHandler} setNotificationMessage={setNotificationMessage} updateBlogTable={updateBlogTable}/>
+      <Blog blog={blog} user={user} addLike={mockHandler} setNotificationMessage={setNotificationMessage} deleteBlog={deleteBlogTable}/>
     )
   })
 
