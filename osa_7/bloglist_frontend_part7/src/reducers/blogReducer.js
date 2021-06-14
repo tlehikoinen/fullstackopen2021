@@ -27,18 +27,17 @@ const blogReducer = (state = { blogs: [] }, action) => {
     return state
 
   }
-
 }
 
 export const getBlogsFromServer = () => {
   return async dispatch => {
     const blogs = await blogService.getAll()
-    dispatch(setBlogss(blogs))
+    dispatch(setBlogs(blogs))
   }
 }
 
 
-export const setBlogss = (blogs) => {
+export const setBlogs = (blogs) => {
   return {
     type: 'SETBLOGS',
     blogs: blogs

@@ -2,7 +2,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 
-const TestNotification = () => {
+const Notification = () => {
 
   const notificationMessage = useSelector(state => state.notification.message )
   const type = useSelector(state => state.notification.type)
@@ -49,4 +49,4 @@ const TestNotification = () => {
 
 }
 
-export default TestNotification
+export default Notification
