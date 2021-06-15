@@ -1,4 +1,4 @@
-const notificationReducer = (state = { message: 'Hello and welcome', type:'default', timeout : null }, action) => {
+const notificationReducer = (state = {}, action) => {
   switch(action.type) {
   case 'NEW_NOTIFICATION':
     if(state.timeout !== null) {

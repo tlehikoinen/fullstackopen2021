@@ -100,6 +100,20 @@ const App = () => {
   }
 
   /* Components */
+  const navbarBox = {
+    width: '100%',
+    float: 'left',
+    margin: '0 0 3em 0',
+    padding: '0',
+    listStyle: 'none',
+    backgroundColor: 'grey',
+  }
+  const navbarItem = {
+    display: 'block',
+    padding: '5px',
+    float: 'left',
+    fontWeight: 'bold',
+  }
 
   const Blogs = () => {
     const blogs = useSelector(state => state.blogs.blogs)
@@ -178,22 +192,34 @@ const App = () => {
         <div>
           {individualBlog.likes} likes
           <button type="button" onClick={() => addLike(individualBlog.id, individualBlog.likes)}> like</button>
-          <button style={showForOwner} type="remove" onClick={() => deleteBlog(individualBlog.id)}>Delete</button>
+          <button style={showForOwner} type="remove" onClick={() => { if (window.confirm('you sure')) { {deleteBlog(individualBlog.id)} }}}>Delete</button>
         </div>
         <p>Added by {individualBlog.user.name}</p>
       </div>
     )
   }
 
-  const LoggedInForm = () => {
+  const NavigationBar = () => {
     const user = useSelector(state => state.user.user)
+
     return (
       <div>
-        <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
+        <ul style={navbarBox}>
+          <li style={navbarItem} ><Link to='/'>Home</Link></li>
+          <li style={navbarItem}><Link to='/blogs'>blogs </Link></li>
+          <li style={navbarItem}><Link to='/users'>users</Link></li>
+          <li style={navbarItem} >{user.name} logged in <button onClick={handleLogout}>logout</button></li>
+        </ul>
+      </div>
+    )
+  }
+
+  const LoggedInForm = () => {
+    return (
+      <div>
         <Router>
-          <Link to='/'><h2>Blog app</h2></Link>
-          <Link to='/blogs'>blogs </Link>
-          <Link to='/users'>users</Link>
+          <NavigationBar/>
+          <h2>Blog app</h2>
           <Switch>
             <Route path='/blogs/:id'>
               <IndividualBlog />
