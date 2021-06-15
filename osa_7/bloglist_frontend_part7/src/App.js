@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import {
   BrowserRouter as Router,
-  Switch, Route, Link
+  Switch, Route, Link, useParams
+
 } from 'react-router-dom'
 import Blog from './components/Blog'
 import CreateNewBlog from './components/CreateNewBlog'
@@ -59,7 +60,6 @@ const App = () => {
   }
 
   const deleteBlog = async (id) => {
-
     try {
       const response = await blogService.remove(id)
       dispatch(removeBlog(id))
@@ -73,7 +73,6 @@ const App = () => {
   }
 
   const handleLogin = async (loginInfo) => {
-
     try {
       const user = await loginService.login(loginInfo)
       dispatch(setUserInfo(user))
@@ -83,7 +82,6 @@ const App = () => {
     } catch (exception) {
       setNotificationWithType('Wrong credentials', 'error', 5)
     }
-
   }
 
   const handleLogout = (event) => {
@@ -101,12 +99,14 @@ const App = () => {
     dispatch(setUserInfo(user))
   }
 
+  /* Components */
 
   const Blogs = () => {
     const blogs = useSelector(state => state.blogs.blogs)
     const user = useSelector ( state => state.user.user)
     return (
       <div>
+        <h2>Blogs</h2>
         <div className="blogs">
           {blogs.map(blog =>
             <Blog key={blog.id} blog={blog} user={user} addLike={addLike} deleteBlog={deleteBlog} />)}
@@ -130,11 +130,57 @@ const App = () => {
           <tbody>
             {usersAndBlogs.map(u =>
               <tr key={u.id}>
-                <td>{u.name}</td>
+                <td><Link to={`/users/${u.id}`}>{u.name}</Link> </td>
                 <td>{u.blogs.length}</td>
               </tr>)}
           </tbody>
         </table>
+      </div>
+    )
+  }
+
+  const UserWithBlogs = () => {
+    const usersAndBlogs = useSelector(state => state.usersAndBlogs)
+    const id = useParams().id
+    const userWithBlogs = usersAndBlogs.data.find(d => d.id === id)
+
+    if (!userWithBlogs) {
+      return null
+    }
+    return (
+      <div>
+        <h2>{userWithBlogs.name}</h2>
+        <h3>Added blogs</h3>
+        <ul>
+          {userWithBlogs.blogs.map(b =>
+            <li key={b.id}><Link to={`/blogs/${b.id}`}>{b.title}</Link></li>
+          )}
+        </ul>
+      </div>
+    )
+  }
+
+  const IndividualBlog = () => {
+    const blogId = useParams().id
+    const blogs = useSelector(state => state.blogs.blogs)
+    const loggedInUser = useSelector(state => state.user.user.name)
+    const individualBlog = blogs.find(b => b.id === blogId)
+
+    if(!individualBlog || !loggedInUser) {
+      return null
+    }
+    const showForOwner = { display:  loggedInUser === individualBlog.user.name ? '' : 'none' }
+
+    return (
+      <div>
+        <h2>{individualBlog.title} by {individualBlog.author}</h2>
+        <p><a href={individualBlog.url}>{individualBlog.url}</a></p>
+        <div>
+          {individualBlog.likes} likes
+          <button type="button" onClick={() => addLike(individualBlog.id, individualBlog.likes)}> like</button>
+          <button style={showForOwner} type="remove" onClick={() => deleteBlog(individualBlog.id)}>Delete</button>
+        </div>
+        <p>Added by {individualBlog.user.name}</p>
       </div>
     )
   }
@@ -145,11 +191,14 @@ const App = () => {
       <div>
         <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
         <Router>
+          <Link to='/'><h2>Blog app</h2></Link>
           <Link to='/blogs'>blogs </Link>
           <Link to='/users'>users</Link>
           <Switch>
+            <Route path='/blogs/:id'>
+              <IndividualBlog />
+            </Route>
             <Route path='/blogs'>
-              <h2>Blogs</h2>
               <div>
                 <CreateNewBlog
                   createNewVisible={createNewVisible}
@@ -157,6 +206,9 @@ const App = () => {
                   create={createNewBlog} />
                 <Blogs />
               </div>
+            </Route>
+            <Route path='/users/:id'>
+              <UserWithBlogs />
             </Route>
             <Route path='/users'>
               <Users />
@@ -172,10 +224,8 @@ const App = () => {
 
   const LoggedOutForm = () => {
     return (
-      <div>
-        <Login
-          login={handleLogin}/>
-      </div>
+      <Login
+        login={handleLogin} />
     )
   }
 

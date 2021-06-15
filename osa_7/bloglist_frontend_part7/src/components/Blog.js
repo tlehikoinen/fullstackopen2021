@@ -2,8 +2,6 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
 const Blog = ({ blog, user, addLike, deleteBlog }) => {
-  console.log('blog', blog)
-
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,

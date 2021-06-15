@@ -11,6 +11,8 @@ const userReducer = ( state = { user: { }, loggedIn:false } , action ) => {
     state.user.username = action.user.username
     state.loggedIn = true
     return state
+  case 'GETINFO':
+    return state
   case 'PRINTUSER':
     return state
 
@@ -28,6 +30,12 @@ export const setUserInfo = (user) => {
       token : user.token,
       username : user.username
     }
+  }
+}
+
+export const getUserInfo = () => {
+  return {
+    type: 'GETINFO'
   }
 }
 
