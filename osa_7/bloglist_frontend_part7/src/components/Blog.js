@@ -3,13 +3,13 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 
 const Blog = ({ blog, user, addLike, deleteBlog }) => {
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
+  // const blogStyle = {
+  //   paddingTop: 10,
+  //   paddingLeft: 2,
+  //   border: 'solid',
+  //   borderWidth: 1,
+  //   marginBottom: 5
+  // }
 
   const buttonStyle = {
     background:'none',
@@ -38,11 +38,11 @@ const Blog = ({ blog, user, addLike, deleteBlog }) => {
   }
 
   return (
-    <div className="blogDiv" style={blogStyle}>
-      <div className="visibleDiv" style={hideWhenVisible}>
+    <>
+      <th className="visibleDiv" style={hideWhenVisible}>
         <Link to={`/blogs/${blog.id}`} >{blog.title} {blog.author}</Link> <button type="button" style={buttonStyle} onClick={toggleViewBlog}>View</button>
-      </div>
-      <div className="hiddenDiv" style={showWhenVisible}>
+      </th>
+      <th className="hiddenDiv" style={showWhenVisible}>
         <h3><Link to={`/blogs/${blog.id}`}>{blog.title}</Link></h3>
         By author: {blog.author}<br/>
         Url: <a href={blog.url} target="_blank" rel="noreferrer">{blog.url}</a><br/>
@@ -51,8 +51,8 @@ const Blog = ({ blog, user, addLike, deleteBlog }) => {
         <div style={showForOwner}>
           <button type="button" style={buttonStyle} onClick={remove}>Remove</button>
         </div>
-      </div>
-    </div>
+      </th>
+    </>
   )
 }
 

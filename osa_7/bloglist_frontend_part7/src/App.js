@@ -15,6 +15,8 @@ import { setNotification } from './reducers/notificationReducer'
 import { addCommentToBlog, getBlogsFromServer, setNewBlog, addLikeToBlog, removeBlog } from './reducers/blogReducer'
 import { clearUserInfo, setUserInfo } from './reducers/userReducer'
 import { getUsersAndBlogs } from './reducers/usersAndBlogsReducer'
+import { Button, Table, Navbar, Nav } from 'react-bootstrap'
+
 
 const App = () => {
 
@@ -91,11 +93,12 @@ const App = () => {
     setNotificationWithType('Logged out successfully', 'default', 1)
   }
 
-  const addNewComment = async (blogId, comment) => {
+  const addNewComment = async (blogId, comment, addNewComment) => {
     try{
       const response = await blogService.addComment(blogId, comment)
       const updatedBlog = response.message.comments[response.message.comments.length-1]
       dispatch(addCommentToBlog(blogId, comment = { id : updatedBlog._id, comment: updatedBlog.comment } ))
+      addNewComment('')
     } catch (error) {
       console.log(error)
     }
@@ -111,19 +114,23 @@ const App = () => {
   }
 
   /* Components */
-  const navbarBox = {
-    width: '100%',
-    float: 'left',
-    margin: '0 0 3em 0',
-    padding: '0',
-    listStyle: 'none',
-    backgroundColor: 'grey',
-  }
-  const navbarItem = {
-    display: 'block',
-    padding: '5px',
-    float: 'left',
-    fontWeight: 'bold',
+  // const navbarBox = {
+  //   width: '100%',
+  //   float: 'left',
+  //   margin: '0 0 3em 0',
+  //   padding: '0',
+  //   listStyle: 'none',
+  //   backgroundColor: 'grey',
+  // }
+  // const navbarItem = {
+  //   display: 'block',
+  //   padding: '5px',
+  //   float: 'left',
+  //   fontWeight: 'bold',
+  // }
+
+  const padding = {
+    padding: '5px'
   }
 
   const Blogs = () => {
@@ -133,8 +140,12 @@ const App = () => {
       <div>
         <h2>Blogs</h2>
         <div className="blogs">
-          {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} user={user} addLike={addLike} deleteBlog={deleteBlog} />)}
+          <Table striped>
+            <tbody>
+              {blogs.map(blog =>
+                <tr key={blog.id}><Blog key={blog.id} blog={blog} user={user} addLike={addLike} deleteBlog={deleteBlog} /></tr>)}
+            </tbody>
+          </Table>
         </div>
       </div>
     )
@@ -213,7 +224,7 @@ const App = () => {
         </div>
         <div>
           <h2>Comments</h2>
-          <input value={newComment} onChange={({ target }) => setNewComment(target.value)} /><button type="button" onClick={() => addNewComment(individualBlog.id, newComment)}>Add comment</button>
+          <input value={newComment} onChange={({ target }) => setNewComment(target.value)} /><button type="button" onClick={() => addNewComment(individualBlog.id, newComment, setNewComment)}>Add comment</button>
           {comments !== undefined
             ?
             <div>
@@ -232,16 +243,29 @@ const App = () => {
   const NavigationBar = () => {
     const user = useSelector(state => state.user.user)
 
-    return (
-      <div>
-        <ul style={navbarBox}>
-          <li style={navbarItem} ><Link to='/'>Home</Link></li>
-          <li style={navbarItem}><Link to='/blogs'>blogs </Link></li>
-          <li style={navbarItem}><Link to='/users'>users</Link></li>
-          <li style={navbarItem} >{user.name} logged in <button onClick={handleLogout}>logout</button></li>
-        </ul>
-      </div>
+    return(
+      <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        <Navbar.Collapse id="responsive-navbar-nav">
+          <Nav className="mr-auto">
+            <Nav.Link href="#" as="span">
+              <Link style={padding} to="/">home</Link>
+            </Nav.Link>
+            <Nav.Link href="#" as="span">
+              <Link style={padding} to="/blogs">blogs</Link>
+            </Nav.Link>
+            <Nav.Link href="#" as="span">
+              <Link style={padding} to="/users">users</Link>
+            </Nav.Link>
+            <Nav.Link href="#" as="span">
+              {user.name} logged in <Button variant="danger" onClick={handleLogout}>logout</Button>
+            </Nav.Link>
+          </Nav>
+        </Navbar.Collapse>
+      </Navbar>
     )
+
+
   }
 
   const LoggedInForm = () => {
@@ -286,7 +310,7 @@ const App = () => {
   }
 
   return (
-    <div>
+    <div className='container'>
       <Notification message={ useSelector(state => state.message)} type={ useSelector(state => state.type)} />
       { (useSelector(state => state.user.loggedIn)) === false && <LoggedOutForm />}
       { (useSelector(state => state.user.loggedIn)) === true && <LoggedInForm />}

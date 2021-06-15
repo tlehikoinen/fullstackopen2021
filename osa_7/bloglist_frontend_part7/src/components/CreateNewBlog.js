@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import Button from 'react-bootstrap/Button'
 
 const CreateNewBlog = ({ create, createNewVisible, toggleCreateNewVisible }) => {
 
@@ -22,7 +23,7 @@ const CreateNewBlog = ({ create, createNewVisible, toggleCreateNewVisible }) => 
   return (
     <div>
       <div style={hideWhenVisible}>
-        <button type="button" onClick={toggleCreateNewVisible}>Create new</button>
+        <Button variant="primary" type="button" onClick={toggleCreateNewVisible}>Create new</Button>
       </div>
       <div style={showWhenVisible}>
         <form onSubmit={createNew}>
@@ -54,8 +55,8 @@ const CreateNewBlog = ({ create, createNewVisible, toggleCreateNewVisible }) => 
               name="Url"
               onChange={({ target }) => setUrl(target.value)}></input>
           </div>
-          <button id="submitNewBlog-button" type="submit">Create</button>
-          <button id="cancelNewBlog-button" type="button" onClick={toggleCreateNewVisible}>Cancel</button>
+          <Button variant="success"id="submitNewBlog-button" type="submit">Create</Button>
+          <Button variant="danger" id="cancelNewBlog-button" type="button" onClick={toggleCreateNewVisible}>Cancel</Button>
         </form>
       </div>
     </div>
