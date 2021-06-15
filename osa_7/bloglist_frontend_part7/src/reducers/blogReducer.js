@@ -5,10 +5,13 @@ const blogReducer = (state = { blogs: [] }, action) => {
   case 'SETBLOGS':
     state.blogs = action.blogs.sort((a,b) => a.likes < b.likes ? 1 : -1)
     return state
-
   case 'NEWBLOG': {
     const newBlogs = state.blogs.concat(action.blog)
     state.blogs = newBlogs
+    return state
+  }
+  case 'ADDCOMMENT': {
+    state.blogs = state.blogs.map(s => s.id === action.id ? { ...s, comments: s.comments.concat(action.comment) } : s)
     return state
   }
   case 'ADDLIKE':
@@ -62,6 +65,17 @@ export const addLikeToBlog = (id) => {
   return {
     type: 'ADDLIKE',
     id: id
+  }
+}
+
+export const addCommentToBlog = (blogId, comment) => {
+  return {
+    type: 'ADDCOMMENT',
+    id: blogId,
+    comment: {
+      _id : comment.id,
+      comment: comment.comment
+    }
   }
 }
 

@@ -19,9 +19,13 @@ const createNew = async (newBlog) => {
 }
 
 const addLike = async (blogId, likes) => {
-
   const config = { headers : { Authorization : token } }
   const response = await axios.put(`${baseUrl}/${blogId}`, { 'likes': likes + 1 }, config)
+  return response.data
+}
+
+const addComment = async (blogId, comment) => {
+  const response = await axios.post(`${baseUrl}/${blogId}/comments`, { comment })
   return response.data
 }
 
@@ -31,4 +35,4 @@ const remove = async (blogId) => {
   return response.data
 }
 
-export default { addLike, getAll, createNew, remove, setToken }
+export default { addComment, addLike, createNew, getAll, remove, setToken }

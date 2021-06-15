@@ -12,7 +12,7 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
-import { getBlogsFromServer, setNewBlog, addLikeToBlog, removeBlog } from './reducers/blogReducer'
+import { addCommentToBlog, getBlogsFromServer, setNewBlog, addLikeToBlog, removeBlog } from './reducers/blogReducer'
 import { clearUserInfo, setUserInfo } from './reducers/userReducer'
 import { getUsersAndBlogs } from './reducers/usersAndBlogsReducer'
 
@@ -89,6 +89,17 @@ const App = () => {
     window.localStorage.clear()
     dispatch(clearUserInfo())
     setNotificationWithType('Logged out successfully', 'default', 1)
+  }
+
+  const addNewComment = async (blogId, comment) => {
+    try{
+      const response = await blogService.addComment(blogId, comment)
+      const updatedBlog = response.message.comments[response.message.comments.length-1]
+      dispatch(addCommentToBlog(blogId, comment = { id : updatedBlog._id, comment: updatedBlog.comment } ))
+    } catch (error) {
+      console.log(error)
+    }
+
   }
 
   const setNotificationWithType = (message, type, time) => {
@@ -180,6 +191,8 @@ const App = () => {
     const loggedInUser = useSelector(state => state.user.user.name)
     const individualBlog = blogs.find(b => b.id === blogId)
 
+    const [newComment, setNewComment] = useState('')
+
     if(!individualBlog || !loggedInUser) {
       return null
     }
@@ -200,6 +213,7 @@ const App = () => {
         </div>
         <div>
           <h2>Comments</h2>
+          <input value={newComment} onChange={({ target }) => setNewComment(target.value)} /><button type="button" onClick={() => addNewComment(individualBlog.id, newComment)}>Add comment</button>
           {comments !== undefined
             ?
             <div>

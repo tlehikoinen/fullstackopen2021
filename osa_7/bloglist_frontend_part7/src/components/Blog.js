@@ -43,7 +43,7 @@ const Blog = ({ blog, user, addLike, deleteBlog }) => {
         <Link to={`/blogs/${blog.id}`} >{blog.title} {blog.author}</Link> <button type="button" style={buttonStyle} onClick={toggleViewBlog}>View</button>
       </div>
       <div className="hiddenDiv" style={showWhenVisible}>
-        <h3>{blog.title}</h3>
+        <h3><Link to={`/blogs/${blog.id}`}>{blog.title}</Link></h3>
         By author: {blog.author}<br/>
         Url: <a href={blog.url} target="_blank" rel="noreferrer">{blog.url}</a><br/>
         Likes: {blog.likes} <button type="button" id="like-button" style={buttonStyle} onClick={incrementLike}>Like</button> <br/>
