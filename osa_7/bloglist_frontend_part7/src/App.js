@@ -183,18 +183,34 @@ const App = () => {
     if(!individualBlog || !loggedInUser) {
       return null
     }
+    const comments = individualBlog.comments.length !==0 ? individualBlog.comments : undefined
     const showForOwner = { display:  loggedInUser === individualBlog.user.name ? '' : 'none' }
 
     return (
       <div>
-        <h2>{individualBlog.title} by {individualBlog.author}</h2>
-        <p><a href={individualBlog.url}>{individualBlog.url}</a></p>
         <div>
-          {individualBlog.likes} likes
-          <button type="button" onClick={() => addLike(individualBlog.id, individualBlog.likes)}> like</button>
-          <button style={showForOwner} type="remove" onClick={() => { if (window.confirm('you sure')) { {deleteBlog(individualBlog.id)} }}}>Delete</button>
+          <h2>{individualBlog.title} by {individualBlog.author}</h2>
+          <p><a href={individualBlog.url}>{individualBlog.url}</a></p>
+          <div>
+            {individualBlog.likes} likes
+            <button type="button" onClick={() => addLike(individualBlog.id, individualBlog.likes)}> like</button>
+            <button style={showForOwner} type="remove" onClick={() => { if (window.confirm('you sure')) { { deleteBlog(individualBlog.id) } } }}>Delete</button>
+          </div>
+          <p>Added by {individualBlog.user.name}</p>
         </div>
-        <p>Added by {individualBlog.user.name}</p>
+        <div>
+          <h2>Comments</h2>
+          {comments !== undefined
+            ?
+            <div>
+              <ul>
+                {comments.map(c =>
+                  <li key={c._id}>{c.comment}</li>)}
+              </ul>
+            </div>
+            : <h2>No comments yet</h2>}
+        </div>
+
       </div>
     )
   }

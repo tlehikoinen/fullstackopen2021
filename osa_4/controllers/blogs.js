@@ -1,4 +1,5 @@
 const blogsRouter = require('express').Router()
+const blog = require('../models/blog')
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const middleware = require('../utils/middleware')
@@ -39,6 +40,24 @@ blogsRouter.post('/', middleware.userExtractor, async (request, response, next) 
   } catch (error) {
     next(error)
   }
+})
+
+blogsRouter.post('/:id/comments', async (request, response, next) => {
+  const id = request.params.id
+  try{
+  const blogToBeUpdated = await Blog.findById(id)
+  if(!blogToBeUpdated) {
+    response.status(404).json({ Message: "Not found, couldn't add comment"})
+  }
+  const updatedBlog = {
+    ...blogToBeUpdated, comments: blogToBeUpdated.comments.push({comment : request.body.comment})
+  }
+  const message = await Blog.findByIdAndUpdate(id, updatedBlog, { new : true })
+  response.status(200).json({message})
+
+} catch (error) {
+  next(error)
+}
 })
 
 
