@@ -113,24 +113,8 @@ const App = () => {
     dispatch(setUserInfo(user))
   }
 
-  /* Components */
-  // const navbarBox = {
-  //   width: '100%',
-  //   float: 'left',
-  //   margin: '0 0 3em 0',
-  //   padding: '0',
-  //   listStyle: 'none',
-  //   backgroundColor: 'grey',
-  // }
-  // const navbarItem = {
-  //   display: 'block',
-  //   padding: '5px',
-  //   float: 'left',
-  //   fontWeight: 'bold',
-  // }
-
   const padding = {
-    padding: '5px'
+    padding: '10px'
   }
 
   const Blogs = () => {

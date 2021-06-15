@@ -38,6 +38,7 @@ describe('Blog app', function () {
   describe('When logged in', function() {
     beforeEach(function() {
       cy.login( { username : 'testuser', password : 'password' })
+      cy.visit('http://localhost:3000/blogs')
     })
 
     it('A Blog can be created', function() {
@@ -64,6 +65,8 @@ describe('Blog app', function () {
 
       beforeEach(function() {
         cy.createBlog( blog )
+        cy.visit('http://localhost:3000/blogs')
+
       })
 
       it('User can add like to blog', function() {
@@ -94,6 +97,7 @@ describe('Blog app', function () {
         cy.createBlog(blog1)
         cy.createBlog(blog2)
         cy.createBlog(blog3)
+        cy.visit('http://localhost:3000/blogs')
       })
 
       it('Blogs are sorted by likes', function() {
@@ -103,12 +107,9 @@ describe('Blog app', function () {
           }
         })
 
-        cy.get('.blogDiv').then(blogs => {
-          cy.get(blogs[0]).contains('Likes: 10')
-          cy.get(blogs[1]).contains('Likes: 5')
-          cy.get(blogs[2]).contains('Likes: 1')
-        })
-
+        cy.get('tbody>tr').eq(0).contains('Likes: 10')
+        cy.get('tbody>tr').eq(1).contains('Likes: 5')
+        cy.get('tbody>tr').eq(2).contains('Likes: 1')
       })
     })
 
