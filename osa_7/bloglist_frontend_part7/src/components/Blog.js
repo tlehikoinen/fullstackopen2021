@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 
 const Blog = ({ blog, user, addLike, deleteBlog }) => {
   const blogStyle = {
@@ -39,7 +40,7 @@ const Blog = ({ blog, user, addLike, deleteBlog }) => {
   return (
     <div className="blogDiv" style={blogStyle}>
       <div className="visibleDiv" style={hideWhenVisible}>
-        {blog.title} {blog.author} <button type="button" style={buttonStyle} onClick={toggleViewBlog}>View</button>
+        <Link to={`/blogs/${blog.id}`} >{blog.title} {blog.author}</Link> <button type="button" style={buttonStyle} onClick={toggleViewBlog}>View</button>
       </div>
       <div className="hiddenDiv" style={showWhenVisible}>
         <h3>{blog.title}</h3>
