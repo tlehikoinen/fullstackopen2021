@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Form, Button } from 'react-bootstrap'
 
-const LoginForm = ({ login }) => {
+const LoginForm = ({ login, setSignInVisible }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -35,7 +35,8 @@ const LoginForm = ({ login }) => {
             value={password}
             onChange={({ target }) => setPassword(target.value)}
           />
-          <Button variant="primary" id="login-button" type="submit" >Submit</Button>
+          <Button variant="primary" id="login-button" type="submit" >Login</Button>
+          <Button variant="primary" id="show-signin" type="button" onClick={setSignInVisible}>Sign in</Button>
         </Form.Group>
       </Form>
     </div>

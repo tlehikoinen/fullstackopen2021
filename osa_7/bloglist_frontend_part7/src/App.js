@@ -7,9 +7,11 @@ import {
 import Blog from './components/Blog'
 import CreateNewBlog from './components/CreateNewBlog'
 import Login from './components/Login'
+import SignIn from './components/SignIn'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import userService from './services/users'
 import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
 import { addCommentToBlog, getBlogsFromServer, setNewBlog, addLikeToBlog, removeBlog } from './reducers/blogReducer'
@@ -21,6 +23,7 @@ import { Button, Table, Navbar, Nav } from 'react-bootstrap'
 const App = () => {
 
   const [createNewVisible, toggleCreateNewVisible] = useState(false)
+  const [signInVisible, setSignInVisible] = useState(false)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -91,6 +94,17 @@ const App = () => {
     window.localStorage.clear()
     dispatch(clearUserInfo())
     setNotificationWithType('Logged out successfully', 'default', 1)
+  }
+
+  const handleSignin = async (signinInfo) => {
+    try {
+      await userService.createNew(signinInfo)
+      setSignInVisible(!signInVisible)
+      dispatch(getUsersAndBlogs())
+    } catch (error) {
+      console.log(error)
+      setNotificationWithType(error.message, 'error', 2)
+    }
   }
 
   const addNewComment = async (blogId, comment, addNewComment) => {
@@ -288,8 +302,11 @@ const App = () => {
 
   const LoggedOutForm = () => {
     return (
-      <Login
-        login={handleLogin} />
+      <div>
+        <Login
+          login={handleLogin} setSignInVisible={() => setSignInVisible(!signInVisible)} />
+        <SignIn signin={handleSignin} signInVisible={signInVisible}/>
+      </div>
     )
   }
 

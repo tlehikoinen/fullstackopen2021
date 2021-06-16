@@ -6,6 +6,12 @@ const getAll = () => {
   return request.then(response => response.data)
 }
 
+const createNew = async (user) => {
+  const response = await axios.post(baseUrl, { username: user.username, name: user.name, password: user.password } )
+  return response
+
+}
 
 
-export default { getAll }
+
+export default { createNew, getAll }
