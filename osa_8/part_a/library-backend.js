@@ -80,10 +80,15 @@ let books = [
     author: 'Fyodor Dostoevsky',
     id: "afa5de04-344d-11e9-a414-719c6709cf3e",
     genres: ['classic', 'revolution']
-  },
+  }
 ]
 
 const typeDefs = gql`
+  type Author {
+      name: String!
+      born: Int
+      bookCount: Int
+  }
 
   type Book {
       title: String!
@@ -95,6 +100,7 @@ const typeDefs = gql`
       bookCount: Int!
       authorCount: Int!
       allBooks: [Book!]!
+      allAuthors: [Author!]!
   }
 `
 
@@ -102,10 +108,19 @@ const resolvers = {
   Query: {
       bookCount: () => books.length,
       authorCount: () => authors.length,
-      allBooks: () => books
-     
+      allBooks: () => books,
+      allAuthors: () => {
+        authors.map(a => {
+            a.bookCount = 0
+            books.forEach(b => {
+                if (b.author === a.name) {
+                    a.bookCount++
+                }
+            })
+        })
+        return authors
+    }
   }
-  
 }
 
 const server = new ApolloServer({
