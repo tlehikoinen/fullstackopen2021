@@ -1,0 +1,19 @@
+{
+  "name": "part_a",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node library-backend.js",
+    "dev": "nodemon library-backend.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server": "^2.25.1",
+    "graphql": "^15.5.0",
+    "nodemon": "^2.0.7"
+  }
+}
