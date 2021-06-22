@@ -168,16 +168,16 @@ const resolvers = {
     authorCount: async () => await Author.collection.countDocuments(),
     allBooks: async (root, args) => {
       if (args.author === undefined && args.genre === undefined) {
-        return await Book.find({}).populate('author', { username: 1, name: 1 })
+        return await Book.find({}).populate('author')
       }
       if (args.author === undefined) {
-        return await Book.find({genres: {$elemMatch : {$all: args.genre}}}).populate('author', { username: 1, name: 1})
+        return await Book.find({genres: {$elemMatch : {$all: args.genre}}}).populate('author')
       }
       const existingAuthor = await Author.findOne({name : args.author})
       if (args.genre === undefined) {
-        return await Book.find({author: existingAuthor.id}).populate('author', { username: 1, name: 1})
+        return await Book.find({author: existingAuthor.id}).populate('author')
       }
-      return await Book.find({ author : existingAuthor.id, genres: {$in : [args.genre]}}).populate('author', { username: 1, name: 1})
+      return await Book.find({ author : existingAuthor.id, genres: {$in : [args.genre]}}).populate('author')
       //return (books.filter(b => b.author.includes(args.author))).filter(b => b.genres.some(b => b.includes(args.genre)))
     },
 
@@ -206,7 +206,11 @@ const resolvers = {
   },
 
   Mutation: {
-    addBook: async (root, args) => {
+    
+    addBook: async (root, args, context) => {
+      if (!context.currentUser){
+        return new UserInputError('Validation failed')
+      }
       let book = { ...args }
       const authorExists = await Author.findOne({ name: args.author })
       if (authorExists === null) {
@@ -226,7 +230,7 @@ const resolvers = {
         try {
           const newBook = new Book({ ...book })
           await newBook.save()
-          return await Book.findOne({_id: newBook._id}).populate('author', { username: 1, name: 1})
+          return await Book.findOne({_id: newBook._id}).populate('author')
         } catch (error) {
             throw new UserInputError(error.message, { invalidArgs: args })
       }
@@ -244,12 +248,8 @@ const resolvers = {
       }
     },
 
-    createUser: async (root, args, context) => {
-      if (!context.currentUser){
-        return new UserInputError('Validation failed')
-      }
+    createUser: async (root, args) => {
       const user = new User({ username: args.username, favoriteGenre: args.favoriteGenre })
-  
       return await user.save()
         .catch(error => {
           throw new UserInputError(error.message, {
