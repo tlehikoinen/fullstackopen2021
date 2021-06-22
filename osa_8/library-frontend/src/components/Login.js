@@ -15,8 +15,10 @@ const Login = (props) => {
 
   useEffect(() => {
       if (result.data) {
-        const token = result.data.login.value
+        const token = result.data.login.token
+        const favoriteGenre = result.data.login.user.favoriteGenre
         props.setToken(token)
+        props.setFavoriteGenre(favoriteGenre)
         props.setPage('authors')
         localStorage.setItem('library-user-token', token)
       }

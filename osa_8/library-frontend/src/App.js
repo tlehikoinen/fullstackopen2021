@@ -9,6 +9,7 @@ import { useApolloClient } from '@apollo/client'
 const App = () => {
   const [page, setPage] = useState('authors')
   const [token, setToken] = useState(null)
+  const [favoriteGenre, setFavoriteGenre] = useState(null)
   const client = useApolloClient()
 
 
@@ -73,11 +74,13 @@ const App = () => {
       <Login
         show={page === 'login'}
         setToken={setToken}
+        setFavoriteGenre={setFavoriteGenre}
         setPage={setPage}
       />
       
       <Recommended 
       show={page === 'recommended'}
+      favoriteGenre={favoriteGenre}
       />
     </div>
   )

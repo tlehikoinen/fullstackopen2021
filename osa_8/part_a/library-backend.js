@@ -125,8 +125,9 @@ const typeDefs = gql`
     id: ID!
   }
   
-  type Token {
-    value: String!
+  type LoggedInUser {
+    user: User!
+    token: String!
   }
   
 
@@ -159,7 +160,7 @@ const typeDefs = gql`
       login(
         username: String!
         password: String!
-      ): Token
+      ): LoggedInUser
   }
 `
 
@@ -209,7 +210,6 @@ const resolvers = {
       const books = await Book.find({})
       const uniqueGenres = new Set()
       books.forEach(b => b.genres.forEach(genre => uniqueGenres.add(genre)))
-      console.log([...uniqueGenres])
       const genres = [...uniqueGenres]
       return genres
 
@@ -281,8 +281,9 @@ const resolvers = {
         username: user.username,
         id: user._id,
       }
+      console.log(user)
   
-      return { value: jwt.sign(userForToken, process.env.SECRET) }
+      return { user: user, token: jwt.sign(userForToken, process.env.SECRET) }
     }
   }
 }

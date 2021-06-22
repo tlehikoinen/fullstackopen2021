@@ -14,7 +14,6 @@ const Books = (props) => {
 
   useEffect(() => {
     if (bookResult.data && genreResult.data) {
-      console.log(bookResult.data)
       setBooks(bookResult.data.allBooks)
       setGenres(genreResult.data.allGenres)
     }
