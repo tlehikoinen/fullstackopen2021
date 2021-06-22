@@ -10,6 +10,7 @@ const Authors = (props) => {
 
   useEffect(() => {
     if (result.data){
+      console.log(result.data)
       setAuthors(result.data.allAuthors)
     }
   }, [result])
@@ -54,7 +55,7 @@ const Authors = (props) => {
           )}
         </tbody>
       </table>
-      <div>
+      <div style={{ display: props.token ? 'block' : 'none' }} > 
         <h2>Set birthyear</h2>
         <form onSubmit={submit}>
           <div>

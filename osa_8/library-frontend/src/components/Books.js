@@ -1,25 +1,33 @@
 import React, { useState, useEffect } from 'react'
 import { useQuery } from '@apollo/client'
-import { GET_BOOKS } from '../queries'
+import { GET_GENRES, GET_BOOKS_FILTER_GENRE } from '../queries'
 
 const Books = (props) => {
-
+  const [filter, setFilter] = useState('all')
+  const bookResult = useQuery(GET_BOOKS_FILTER_GENRE, {
+    variables: { "genre": `${filter}` }
+  })
+  const genreResult = useQuery(GET_GENRES)
   const [books, setBooks] = useState([])
-  const result = useQuery(GET_BOOKS)
+  const [genres, setGenres] = useState([])
+ 
 
   useEffect(() => {
-    if (result.data) {
-      setBooks(result.data.allBooks)
+    if (bookResult.data && genreResult.data) {
+      console.log(bookResult.data)
+      setBooks(bookResult.data.allBooks)
+      setGenres(genreResult.data.allGenres)
     }
-  }, [result])
+  }, [bookResult, genreResult])
+
 
   if (!props.show) {
     return null
   }
+
   return (
     <div>
       <h2>books</h2>
-
       <table>
         <tbody>
           <tr>
@@ -38,6 +46,15 @@ const Books = (props) => {
               <td>{a.published}</td>
             </tr>
           )}
+        </tbody>
+      </table>
+      <table>
+        <tbody>
+          <tr>
+          {genres.map(g => 
+            <td key={g}><button onClick={() => setFilter(g)}>{g}</button></td>)}
+            <td><button onClick={() => setFilter('all')}>all</button></td>
+          </tr>
         </tbody>
       </table>
     </div>
