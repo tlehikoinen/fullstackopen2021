@@ -16,7 +16,10 @@ query{
     allBooks
       {
         title
-        author
+        author{
+          name 
+          born
+        }
         published
       }
   }
