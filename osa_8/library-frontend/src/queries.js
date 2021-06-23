@@ -7,6 +7,7 @@ query{
         name
         born
         bookCount
+        id
       }
   }
 `
@@ -20,6 +21,7 @@ query{
           name
         }
         published
+        id
       }
   }
 `
@@ -29,8 +31,10 @@ export const GET_BOOKS_FILTER_GENRE = gql `
       title
       author{
         name
+        id
       }
       published
+      id
     }
   }
 `
@@ -46,6 +50,7 @@ export const ADD_BOOK = gql `
     title
     author {
       name
+      id
     }
     published
     genres
@@ -92,6 +97,21 @@ export const WHOAMI = gql `
     me {
       username
       favoriteGenre
+    }
+  }
+`
+
+export const BOOK_ADDED = gql`
+  subscription {
+    bookAdded {
+      title
+      author{
+        name
+        id
+      }
+      published
+      genres
+      id
     }
   }
 `

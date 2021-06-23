@@ -111,6 +111,7 @@ const typeDefs = gql`
       name: String!
       born: Int
       bookCount: Int
+      id: ID!
   }
 
   type Book {
@@ -248,7 +249,8 @@ const resolvers = {
           const newBook = new Book({ ...book })
           await newBook.save()
           const addedBook = await Book.findOne({_id: newBook._id}).populate('author')
-          pubsub.publish('BOOK_ADDED', { bookAdded: addedBook })
+          console.log(addedBook)
+          pubsub.publish('BOOK_ADDED', { bookAdded: addedBook})
           return addedBook
         } catch (error) {
             throw new UserInputError(error.message, { invalidArgs: args })
