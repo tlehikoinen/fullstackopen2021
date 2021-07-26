@@ -9,4 +9,4 @@
 /osa_4/.env
 /osa_4/.git
 /osa_10
-/osa_9/node_modules
+/osa_9/*/node_modules
