@@ -31,4 +31,8 @@ const calculateExercises = (exerciseData: Array<number>, target: number): exerci
     }
 }
 
-console.log(calculateExercises( [3, 0, 2, 4.5, 0, 3, 1], 2 ));
+const target: number = Number(process.argv[2]);
+const exerciseData: exerciseHours = []
+process.argv.slice(3).forEach(number => exerciseData.push(Number(number)))
+
+console.log(calculateExercises(exerciseData, target))
