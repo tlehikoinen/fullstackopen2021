@@ -30,7 +30,7 @@ app.post('/exercisecalculator', (req, res) => {
   const { daily_exercises, target } = req.body;
 
   if (!daily_exercises || !target) {
-    return res.send({ error: 'Parameters missing'});
+    return res.status(400).send({ error: 'Parameters missing'});
   }
   if (Array.isArray(daily_exercises)) {
     let isNumber = true;
@@ -40,14 +40,14 @@ app.post('/exercisecalculator', (req, res) => {
       }
     });
     if (!isNumber && daily_exercises.length > 0 || typeof target !== 'number') {
-      return res.send({ error: 'Malformatted parameters' });
+      return res.status(400).send({ error: 'Malformatted parameters' });
     }
   }
   try {
     const result = calculateExercises(daily_exercises, target);
     return res.send(result);
   } catch (e) {
-    return res.send({ error: 'Something went wrong' });
+    return res.status(500).send({ error: 'Something went wrong' });
   } 
 });
 
