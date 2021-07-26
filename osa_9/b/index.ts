@@ -1,18 +1,17 @@
 import express from 'express';
 const app = express();
 
-import { calculateBmi } from './bmiCalculator'
+import { calculateBmi } from './bmiCalculator';
 
 app.get('/hello', (_req, res) => {
     res.send('Hello Full Stack!');
 });
 
 app.get('/bmi', (req,res) => {
+  const { weight, height } = req.query;
 
 
-  const weight: number = Number(req.query.weight);
-  const height: number = Number(req.query.height);
-  const bmi = calculateBmi(height, weight);
+  const bmi = calculateBmi(Number(height), Number(weight));
 
   const result = bmi === 'Malformatted parameters' 
   ? { error: 'Malformatted parameters'} 
@@ -20,8 +19,8 @@ app.get('/bmi', (req,res) => {
     weight,
     height,
     bmi
-  }
-  return res.send(result)
+  };
+  return res.send(result);
 });
 
 const PORT = 3003;
