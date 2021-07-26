@@ -11,7 +11,7 @@ interface exerciseCalculatorResult {
     average: number
 }
 
-const calculateExercises = (exerciseData: Array<number>, target: number): exerciseCalculatorResult  => {
+export const calculateExercises = (exerciseData: Array<number>, target: number): exerciseCalculatorResult=> {
 
     const periodLength = exerciseData.length;
     const trainingDays = exerciseData.reduce((count, currentValue) => {
@@ -20,7 +20,7 @@ const calculateExercises = (exerciseData: Array<number>, target: number): exerci
         }, 0);
     const exerciseHoursTotal = exerciseData.reduce((hours, currentValue) => {
         return hours + currentValue;
-    });
+    }, 0);
     const average = exerciseHoursTotal / periodLength;
     const success = average >= target ? true : false;
     const rating = (average/target >= 1) ? 3 : (average/target > 0.67) ? 2 : 1;
