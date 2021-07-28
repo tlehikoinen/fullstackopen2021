@@ -7,9 +7,13 @@ export type Action =
       payload: Patient[];
     }
   | {
-      type: "ADD_PATIENT";
-      payload: Patient;
-    };
+    type: "SET_PATIENT_DATA";
+    payload: Patient
+  }
+  | {
+    type: "ADD_PATIENT";
+    payload: Patient;
+  };
 
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -23,6 +27,11 @@ export const reducer = (state: State, action: Action): State => {
           ),
           ...state.patients
         }
+      };
+    case "SET_PATIENT_DATA":
+      return {
+        ...state, 
+        patient: action.payload,
       };
     case "ADD_PATIENT":
       return {
