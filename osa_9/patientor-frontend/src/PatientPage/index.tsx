@@ -5,6 +5,7 @@ import { Patient } from "../types";
 import { apiBaseUrl } from "../constants";
 import { useStateValue, setPatientData } from "../state";
 import { Icon } from 'semantic-ui-react';
+import Entries from "./entries";
 
 const PatientPage = () => {
     const [{ patient }, dispatch] = useStateValue();
@@ -52,6 +53,9 @@ const PatientPage = () => {
             <h1>{patient?.name} {gendericon()} </h1>
             ssn: {patient?.ssn} <br/>
             occupation: {patient?.occupation}
+            {patient?.entries === undefined || patient.entries.length === 0  
+            ? <p>no entries found</p>
+            : <Entries entries={patient?.entries} />}
         </div>
     );
 };
