@@ -1,8 +1,8 @@
 import React from "react";
-import { CourseProps } from "../Types";
+import { CoursePart } from "../Types";
 
-const Total = ( { courseParts }: {courseParts: Array<CourseProps>}) => {
-    const totalExercises = courseParts.reduce((carry: number, part: CourseProps) => carry + part.exerciseCount, 0)
+const Total = ( { courseParts }: {courseParts: Array<CoursePart>}) => {
+    const totalExercises = courseParts.reduce((carry: number, part: CoursePart) => carry + part.exerciseCount, 0)
     return (
         <>
           <p>Number of exercises {totalExercises}</p>
