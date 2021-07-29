@@ -10,8 +10,6 @@ import Entries from "./entries";
 const PatientPage = () => {
     const [{ patient }, dispatch] = useStateValue();
     const { id } = useParams<{ id: string }>();
-    // console.log(diagnosis);
-    // console.log(patient);
 
     React.useEffect(() => {
         const fetchPatientData = async () => {

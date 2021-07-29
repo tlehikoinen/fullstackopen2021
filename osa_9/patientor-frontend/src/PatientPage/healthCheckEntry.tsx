@@ -1,12 +1,19 @@
 import React from "react";
 import { HealthCheckEntry } from '../types';
 import { useStateValue } from "../state";
+import { Icon, Segment } from "semantic-ui-react";
+import HealthRateHeart from "./HealthRateHeart";
 
 const HealthCheckComp = ({entries}: {entries: HealthCheckEntry}): JSX.Element => {
     const [{ diagnosis }] = useStateValue();
+
     return (
-        <>
-            {entries.date} <span style={{fontStyle:'italic'}}>{entries.description}</span>
+        <Segment>
+            <div>
+              {entries.date} 
+              <Icon name="stethoscope" size="large" title={entries.type}/> 
+            </div>
+            <span style={{fontStyle:'italic'}}>{entries.description}</span>
             <ul>
                 {entries.diagnosisCodes?.map((d, idx) => {
                     return (
@@ -14,7 +21,8 @@ const HealthCheckComp = ({entries}: {entries: HealthCheckEntry}): JSX.Element =>
                     );
                 })}
             </ul>
-        </>
+            <HealthRateHeart healthrating={entries.healthCheckRating} />
+        </Segment>
     );
 };
 
