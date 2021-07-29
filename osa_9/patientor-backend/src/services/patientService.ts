@@ -34,7 +34,7 @@ const addPatient = ( entry: NewPatientEntry ): PatientData => {
     return newPatientEntry;
 };
 
-const addPatientEntry = ( patientId: string, entry: EntryWithoutId) => {
+const addPatientEntry = ( patientId: string, entry: EntryWithoutId): PatientData | undefined => {
     const id:string = uuid();
     const newEntry: Entry = {
         ...entry,
@@ -43,9 +43,6 @@ const addPatientEntry = ( patientId: string, entry: EntryWithoutId) => {
     patientData.find(p => p.id === patientId)?.entries?.push(newEntry);
     const patient = patientData.find(p => p.id === patientId);
     return patient;
-
-
-
 };
 
 export default { addPatient, addPatientEntry, getPatients, getPatientById, getPublicPatients };
