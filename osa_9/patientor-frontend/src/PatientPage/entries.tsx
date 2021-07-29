@@ -4,7 +4,7 @@ import HospitalEntry from "./hospitalEntry";
 import HealthCheckEntry from "./healthCheckEntry";
 import OccupationalHealthcareEntry from "./occupationalHealthcareEntry";
 
-const Entries = ({ entries }: {entries: Entry[] | undefined}): JSX.Element => {
+const Entries = ({ entries }: { entries: Entry[] }): JSX.Element => {
     return (
         <>
         <h3>Entries</h3>
@@ -12,7 +12,7 @@ const Entries = ({ entries }: {entries: Entry[] | undefined}): JSX.Element => {
           switch(e?.type) {
             case 'Hospital': {
                 return (
-                <HospitalEntry key={idx} entries={e} />
+                    <HospitalEntry key={idx} entries={e} />
                 );
             }
             case 'HealthCheck': {

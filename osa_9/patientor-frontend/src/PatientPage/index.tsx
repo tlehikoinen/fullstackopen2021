@@ -10,6 +10,8 @@ import Entries from "./entries";
 const PatientPage = () => {
     const [{ patient }, dispatch] = useStateValue();
     const { id } = useParams<{ id: string }>();
+    // console.log(diagnosis);
+    // console.log(patient);
 
     React.useEffect(() => {
         const fetchPatientData = async () => {
@@ -55,7 +57,7 @@ const PatientPage = () => {
             occupation: {patient?.occupation}
             {patient?.entries === undefined || patient.entries.length === 0  
             ? <p>no entries found</p>
-            : <Entries entries={patient?.entries} />}
+            : <Entries entries={patient.entries} />}
         </div>
     );
 };
