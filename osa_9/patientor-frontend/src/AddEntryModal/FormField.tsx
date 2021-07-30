@@ -19,7 +19,7 @@ type SelectFieldProps = {
 export const SelectField = ({
   name,
   label,
-  options
+  options,
 }: SelectFieldProps) => (
   <Form.Field>
     <label>{label}</label>

@@ -77,6 +77,14 @@ interface BaseEntry {
   diagnosisCodes?: Array<DiagnoseData['code']>;
 }
 
+export interface EntryFormValues extends BaseEntry {
+  type: string,
+  discharge?: { date: string, criteria: string }
+  employerName?: string;
+  sickLeave?: {startDate: string, endDate: string};
+  healthCheckRating?: HealthCheckRating;
+}
+
 export interface Sickleave {
   startDate: string, 
   endDate: string
@@ -86,6 +94,8 @@ export interface Discharge {
   date: string,
   criteria: string
 }
+
+
 
 // Define special omit for unions
 type UnionOmit<T, K extends string | number | symbol> = T extends unknown ? Omit<T, K> : never;

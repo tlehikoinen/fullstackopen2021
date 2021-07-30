@@ -88,9 +88,7 @@ const PatientPage = () => {
                 error={error}
                 onClose={closeModal}
             />
-            <Button onClick={() => openModal()}>Add New Entry</Button>
-
-            
+            <Button onClick={() => openModal()}>Add New Entry</Button>  
         </div>
     );
 };

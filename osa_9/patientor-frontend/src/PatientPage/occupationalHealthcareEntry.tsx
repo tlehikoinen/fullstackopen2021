@@ -20,7 +20,9 @@ const OccupationalHealthcareComp = ({entries}: {entries: OccupationalHealthcareE
                     );
                 })}
             </ul>
-            {entries.sickLeave ? <div>Sickleave: {entries.sickLeave.startDate} - {entries.sickLeave.endDate}</div> : null}
+            {entries.sickLeave?.startDate && entries.sickLeave.endDate &&
+              <div>Sickleave: {entries.sickLeave.startDate} - {entries.sickLeave.endDate}</div>}
+           
         </Segment>
     );
 };
